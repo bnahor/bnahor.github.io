@@ -1,81 +1,32 @@
-import { m } from 'framer-motion';
-import { MOTION } from '../../utils/motion';
 import { education } from '../../data/education';
-import { Icon } from '../Icon';
+import { ScrollReveal } from '../../utils/motion';
 
-interface EducationTileProps {
-  isExpanded: boolean;
-}
-
-export function EducationTile(_props: EducationTileProps) {
+export function EducationTile() {
   return (
-    <div className="flex flex-col min-h-[400px] p-4 md:p-6">
-      {/* Header */}
-      <div className="flex-shrink-0 mb-4">
-        <h2 className="text-xl md:text-2xl font-bold text-text-primary mb-2">
-          Education
-        </h2>
-        <p className="text-text-muted text-sm">
-          Academic background and achievements
-        </p>
-      </div>
+    <section aria-labelledby="education-heading">
+      <p className="section-kicker">Education</p>
+      <h2 id="education-heading" className="section-title">
+        Academic Track
+      </h2>
 
-      {/* Education items */}
-      <div className="flex-1 overflow-visible">
-        <div className="space-y-4">
-          {education.map((item, index) => (
-            <div key={item.school} className="space-y-2">
-              <m.div
-                custom={index}
-                initial={false}
-                animate="show"
-                variants={MOTION.listItem}
-                whileHover={MOTION.cardHover}
-                className="group relative space-y-2 rounded-lg border border-transparent bg-white/0 p-3 transition-colors duration-200 hover:border-white/15 hover:bg-white/5 backdrop-brightness-[1.05]"
-              >
-                {/* School and degree */}
-                <div>
-                  <h3 className="font-semibold text-text-primary text-sm md:text-base">
-                    {item.school}
-                  </h3>
-                  <p className="text-brand text-sm font-medium">
-                    {item.degree}
-                  </p>
-                  {/* No field property in Education type */}
-                </div>
-
-                {/* Duration and location */}
-                <div className="flex flex-wrap gap-3 text-xs text-text-muted">
-                  <span className="flex items-center gap-1 leading-none">
-                    <Icon name="calendar" size={12} /> {item.start} - {item.end}
-                  </span>
-                </div>
-
-                {/* Details */}
-                {item.details && item.details.length > 0 && (
-                  <div className="text-sm space-y-1">
-                    {item.details.map((detail, idx) => (
-                      <div key={idx} className="text-text-muted">
-                        {detail}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Expanded content */}
-                {/* Removed collapsed hint; tiles are static */}
-              </m.div>
-
-              {/* Separator */}
-              {index < education.length - 1 && (
-                <div className="border-b border-stroke/30 pt-2" />
+      <div className="mt-8 space-y-0">
+        {education.map((item, index) => (
+          <ScrollReveal key={item.school} delay={index * 0.08}>
+            <div className={`py-4 ${index > 0 ? 'border-t border-line' : ''}`}>
+              <h3 className="text-base font-semibold text-text-primary">{item.school}</h3>
+              <p className="mt-1 text-sm text-text-muted">{item.degree}</p>
+              <p className="mt-1 font-mono text-xs text-accent/90">
+                {item.start} — {item.end}
+              </p>
+              {item.details && item.details.length > 0 && (
+                <p className="mt-2 border-l border-line pl-3 text-xs leading-relaxed text-text-muted">
+                  {item.details[0]}
+                </p>
               )}
             </div>
-          ))}
-        </div>
+          </ScrollReveal>
+        ))}
       </div>
-
-      {/* No click hint; tiles are static now */}
-    </div>
+    </section>
   );
 }

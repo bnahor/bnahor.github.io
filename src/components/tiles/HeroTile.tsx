@@ -1,325 +1,159 @@
-import { m, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { Suspense, lazy, useMemo, useState } from 'react';
+import { m, useReducedMotion } from 'framer-motion';
 import { profile } from '../../data/profile';
+import { useContact } from '../contactContext';
+import { smooth } from '../../utils/motionPresets';
 import { Icon } from '../Icon';
-import { MOTION } from '../../utils/motion';
-import { EXTERNAL } from '../../config/external';
 
-interface HeroTileProps {
-  isExpanded: boolean;
+const HeroScene = lazy(() => import('../3d/HeroScene'));
+
+function useResumeHref() {
+  return useMemo(() => {
+    if (profile.links.resume.startsWith('http')) return profile.links.resume;
+    const base = import.meta.env.DEV ? '/' : import.meta.env.BASE_URL;
+    return `${base}${profile.links.resume.replace(/^\//, '')}`;
+  }, []);
 }
 
-export function HeroTile({ isExpanded }: HeroTileProps) {
+export function HeroTile() {
   const [copied, setCopied] = useState(false);
-  const [showQuickContact, setShowQuickContact] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
+  const { openContact } = useContact();
+  const resumeHref = useResumeHref();
+  const prefersReduced = useReducedMotion();
 
-  const handleEmailClick = async () => {
+  async function handleCopyEmail() {
     try {
+      if (!navigator.clipboard?.writeText) {
+        window.location.href = `mailto:${profile.email}`;
+        return;
+      }
       await navigator.clipboard.writeText(profile.email);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      window.setTimeout(() => setCopied(false), 1700);
     } catch {
       window.location.href = `mailto:${profile.email}`;
     }
-  };
-
-  const handleQuickContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-
-    const formData = new FormData(e.currentTarget);
-
-    const fetchWithTimeout = async (url: string, options: RequestInit, timeout = 10000, retries = 2): Promise<Response> => {
-      for (let i = 0; i <= retries; i++) {
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-          const response = await fetch(url, {
-            ...options,
-            signal: controller.signal,
-          });
-
-          clearTimeout(timeoutId);
-          return response;
-        } catch (error) {
-          if (i === retries) throw error;
-          // Exponential backoff: wait 1s, then 2s
-          await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i)));
-        }
-      }
-      throw new Error('Max retries reached');
-    };
-
-    try {
-      const response = await fetchWithTimeout(EXTERNAL.FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        setSubmitStatus('success');
-        (e.target as HTMLFormElement).reset();
-        setTimeout(() => {
-          setShowQuickContact(false);
-          setSubmitStatus(null);
-        }, 3000);
-      } else {
-        setSubmitStatus('error');
-      }
-    } catch {
-      setSubmitStatus('error');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const contactMethods = [
-    {
-      name: 'Quick Message',
-      value: 'Send a message directly',
-      icon: 'email' as const,
-      action: () => setShowQuickContact(!showQuickContact),
-      copyable: false
-    },
-    {
-      name: 'Email',
-      value: profile.email,
-      href: `mailto:${profile.email}`,
-      icon: 'email' as const,
-      action: handleEmailClick,
-      copyable: true
-    },
-    {
-      name: 'LinkedIn',
-      value: 'rohan-bahl',
-      href: profile.links.linkedin,
-      icon: 'briefcase' as const,
-    },
-    {
-      name: 'GitHub',
-      value: 'RB9823',
-      href: profile.links.github,
-      icon: 'dev' as const,
-    }
-  ];
+  }
 
   return (
-    <div className="flex flex-col justify-between min-h-[400px] p-4 md:p-6">
-      <div className="flex-shrink-0">
-        <m.h1
-          className="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary mb-2"
-          animate={{
-            fontSize: isExpanded ? '3rem' : undefined
-          }}
-          transition={{ duration: 0.3 }}
-        >
-          {profile.name}
-        </m.h1>
-        <m.p
-          className="text-text-muted leading-[1.75]"
-          animate={{
-            fontSize: isExpanded ? '1.125rem' : '1rem'
-          }}
-          transition={{ duration: 0.3 }}
-        >
-          {profile.valueProp}
-        </m.p>
+    <section
+      id="hero"
+      className="relative min-h-[88svh] overflow-hidden border-b border-line"
+      aria-labelledby="hero-heading"
+    >
+      <div className="absolute inset-y-0 right-0 hidden w-[48%] opacity-55 lg:block">
+        <Suspense fallback={<div className="h-full w-full bg-brand/5" />}>
+          <HeroScene />
+        </Suspense>
       </div>
 
-      <div className="flex-1 py-6">
-        <div className="space-y-3">
-          <h3 className="text-lg font-semibold text-text-primary mb-4">Let's Connect</h3>
-          {contactMethods.map((method) => (
-            <div
-              key={method.name}
-              className="group"
+      <div className="relative z-10 mx-auto grid min-h-[88svh] w-[min(1120px,calc(100%-1.5rem))] items-center gap-10 py-24 md:w-[min(1120px,calc(100%-3rem))] lg:grid-cols-[minmax(0,1.08fr)_minmax(340px,0.72fr)]">
+        <m.div
+          initial={prefersReduced ? {} : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.45 }}
+          className="max-w-3xl"
+        >
+          <p className="section-kicker">{profile.role}</p>
+            <m.h1
+              id="hero-heading"
+              initial={prefersReduced ? {} : { opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...smooth, delay: 0.1 }}
+              className="mt-4 font-display text-[clamp(3rem,8vw,7.5rem)] font-bold leading-[0.9] tracking-[-0.03em] text-text-primary"
             >
-              <m.button
-                onClick={method.action || (() => window.open(method.href, '_blank'))}
-                className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 hover:border-white/20 backdrop-brightness-[1.05] transition-all duration-200 text-left focus-visible:ring-2 focus-visible:ring-brand outline-none"
-                whileHover={MOTION.mobileHover}
-                whileTap={MOTION.tap}
-              >
-                <span className="text-brand">
-                  <Icon name={method.icon} size={18} />
-                </span>
-                <div className="flex-1">
-                  <div className="font-medium text-text-primary text-sm">
-                    {method.name}
-                  </div>
-                  <div className="text-text-muted text-xs">
-                    {method.name === 'Email' && copied ? 'Copied to clipboard!' : method.value}
-                  </div>
-                </div>
-                <m.span
-                  className={`relative text-sm opacity-0 group-hover:opacity-100 transition-opacity ${
-                    method.copyable && method.name === 'Email' && copied ? 'text-emerald-400' : 'text-brand'
-                  }`}
-                  whileHover={{ x: 5 }}
-                >
-                  <AnimatePresence mode="wait" initial={false}>
-                    <m.span
-                      key={method.copyable && method.name === 'Email' && copied ? 'copied' : 'default'}
-                      initial={{ opacity: 0, scale: 0.8, y: 4 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.8, y: -4 }}
-                      transition={{ duration: 0.18, ease: [0.4, 0.0, 0.2, 1] }}
-                      className="inline-flex"
-                    >
-                      {method.copyable && method.name === 'Email' && copied ? (
-                        <Icon name="check" size={14} className="text-emerald-400" />
-                      ) : method.copyable ? (
-                        <Icon name="clipboard" size={14} />
-                      ) : (
-                        <Icon name="arrowRight" size={14} />
-                      )}
-                    </m.span>
-                  </AnimatePresence>
-                </m.span>
-              </m.button>
-              
-              <AnimatePresence>
-                {method.name === 'Quick Message' && showQuickContact && (
-                  <m.div
-                    layout
-                    variants={MOTION.formSlideIn}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    className="mt-3 p-4 bg-white/5 rounded-lg border border-white/10 will-change-transform"
-                  >
-                  <form onSubmit={handleQuickContactSubmit} className="space-y-3">
-                    <m.input
-                      name="name"
-                      type="text"
-                      placeholder="Your name"
-                      required
-                      className="w-full px-3 py-2 bg-surface border border-stroke rounded text-text-primary placeholder-text-muted text-sm focus:ring-2 focus:ring-brand focus:border-transparent transition-all duration-200"
-                      whileFocus={MOTION.formField.focus}
-                      initial={MOTION.formField.blur}
-                    />
-                    <m.input
-                      name="email"
-                      type="email"
-                      placeholder="Your email"
-                      required
-                      className="w-full px-3 py-2 bg-surface border border-stroke rounded text-text-primary placeholder-text-muted text-sm focus:ring-2 focus:ring-brand focus:border-transparent transition-all duration-200"
-                      whileFocus={MOTION.formField.focus}
-                      initial={MOTION.formField.blur}
-                    />
-                    <m.textarea
-                      name="message"
-                      placeholder="Your message..."
-                      rows={3}
-                      required
-                      className="w-full px-3 py-2 bg-surface border border-stroke rounded text-text-primary placeholder-text-muted text-sm focus:ring-2 focus:ring-brand focus:border-transparent resize-none transition-all duration-200"
-                      whileFocus={MOTION.formField.focus}
-                      initial={MOTION.formField.blur}
-                    />
+              {profile.name}
+            </m.h1>
 
-                    <div className="flex items-center gap-2">
-                      <m.button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="btn-primary text-sm py-2 px-4 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-brand outline-none flex items-center gap-2"
-                        whileHover={!isSubmitting ? MOTION.buttonHover : {}}
-                        whileTap={!isSubmitting ? MOTION.tap : {}}
-                      >
-                        {isSubmitting && (
-                          <m.div
-                            className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full"
-                            variants={MOTION.loadingSpinner}
-                            animate="animate"
-                          />
-                        )}
-                        {isSubmitting ? 'Sending...' : 'Send Message'}
-                      </m.button>
+            <m.p
+              initial={prefersReduced ? {} : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25, duration: 0.45 }}
+              className="mt-6 max-w-2xl text-lg leading-relaxed text-text-primary/85 md:text-xl"
+            >
+              {profile.valueProp}
+            </m.p>
 
-                      <m.button
-                        type="button"
-                        onClick={() => setShowQuickContact(false)}
-                        className="text-text-muted hover:text-text-primary text-sm focus-visible:ring-2 focus-visible:ring-brand outline-none rounded"
-                        whileHover={MOTION.mobileHover}
-                        whileTap={MOTION.tap}
-                      >
-                        Cancel
-                      </m.button>
-                    </div>
-
-                    <AnimatePresence>
-                      {submitStatus === 'success' && (
-                        <m.div
-                          className="text-green-500 text-sm flex items-center gap-2"
-                          variants={MOTION.statusMessage}
-                          initial="initial"
-                          animate="animate"
-                          exit="exit"
-                        >
-                          <m.span
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-                          >
-                            ✓
-                          </m.span>
-                          Message sent successfully!
-                        </m.div>
-                      )}
-
-                      {submitStatus === 'error' && (
-                        <m.div
-                          className="text-red-500 text-sm flex items-center gap-2"
-                          variants={MOTION.statusMessage}
-                          initial="initial"
-                          animate="animate"
-                          exit="exit"
-                        >
-                          <m.span
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-                          >
-                            ✗
-                          </m.span>
-                          Failed to send message. Please try email instead.
-                        </m.div>
-                      )}
-                    </AnimatePresence>
-                  </form>
-                  </m.div>
-                )}
-              </AnimatePresence>
+            <div className="mt-6 grid gap-2 border-l border-line pl-4">
+              {profile.operatingPrinciples.map((principle) => (
+                <p key={principle} className="text-sm leading-relaxed text-text-muted">
+                  {principle}
+                </p>
+              ))}
             </div>
-          ))}
-          
-          <div className="flex items-center gap-2 text-sm mt-4 pt-2 border-t border-white/10">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-text-muted">Available for new opportunities</span>
-          </div>
-        </div>
-      </div>
 
-      <div className="flex-shrink-0 pt-4">
-        <div className="flex flex-col gap-3">
-          <m.a
-            href={profile.links.resume}
-            download="rohan_bahl_resume.pdf"
-            className="btn-primary text-sm px-6 py-3 inline-flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-brand outline-none"
-            whileHover={MOTION.buttonHover}
-            whileTap={MOTION.tap}
-          >
-            Download Resume
-            <Icon name="arrowRight" size={16} />
-          </m.a>
-        </div>
+            <m.div
+              initial={prefersReduced ? {} : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35, duration: 0.45 }}
+              className="mt-8 flex flex-wrap items-center gap-3"
+            >
+              <a
+                href={resumeHref}
+                download="rohan_bahl_resume.pdf"
+                className="inline-flex items-center gap-2 rounded-md border border-brand/40 bg-brand/10 px-4 py-2.5 text-sm font-semibold text-brand transition hover:bg-brand/20 focus:outline-none focus:ring-2 focus:ring-brand/35"
+              >
+                Resume
+                <Icon name="arrowRight" size={14} />
+              </a>
+
+              <button
+                type="button"
+                onClick={openContact}
+                className="inline-flex items-center gap-2 rounded-md border border-line px-4 py-2.5 text-sm font-medium text-text-primary transition hover:border-brand/35 hover:text-brand focus:outline-none focus:ring-2 focus:ring-brand/25"
+              >
+                Say hi
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCopyEmail}
+                className="inline-flex items-center gap-2 rounded-md border border-line px-4 py-2.5 text-sm text-text-muted transition hover:border-brand/35 hover:text-brand focus:outline-none focus:ring-2 focus:ring-brand/25"
+              >
+                {copied ? 'Copied!' : 'Copy email'}
+              </button>
+            </m.div>
+
+            <m.div
+              initial={prefersReduced ? {} : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.45, duration: 0.45 }}
+              className="mt-10 flex flex-wrap items-center gap-4 border-t border-line pt-4 font-mono text-xs text-text-muted"
+            >
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-sm bg-brand" aria-hidden="true" />
+                {profile.location}
+              </span>
+              <span className="text-white/20">/</span>
+              <span>{profile.timezone}</span>
+              <span className="text-white/20">/</span>
+              <span className="text-brand/85">{profile.availability}</span>
+            </m.div>
+        </m.div>
+
+        <m.aside
+          initial={prefersReduced ? {} : { opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...smooth, delay: 0.25 }}
+          className="panel overflow-hidden"
+          aria-label="Engineering proof points"
+        >
+          <div className="border-b border-line px-4 py-3">
+            <p className="font-mono text-xs uppercase tracking-[0.16em] text-text-muted">Evidence / recent shipped work</p>
+          </div>
+          <div className="divide-y divide-line">
+            {profile.proofPoints.map((point) => (
+              <div key={point.value} className="grid gap-2 p-4 sm:grid-cols-[88px_1fr]">
+                <p className="font-display text-3xl font-semibold leading-none text-brand">{point.value}</p>
+                <div>
+                  <p className="text-sm font-semibold text-text-primary">{point.label}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-text-muted">{point.context}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </m.aside>
       </div>
-    </div>
+    </section>
   );
 }

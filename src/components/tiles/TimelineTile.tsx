@@ -4,6 +4,7 @@ import { education } from '../../data/education';
 import { highlights } from '../../data/highlights';
 import { Icon } from '../Icon';
 import { useMemo } from 'react';
+import { fadeUp } from '../../utils/motionPresets';
 
 type TimelineIcon = 'briefcase' | 'education' | 'trophy';
 
@@ -14,16 +15,12 @@ interface TimelineEvent {
   date: string;
   endDate?: string | null;
   description?: string;
-  location?: string;
   icon: TimelineIcon;
-  color: string;
 }
 
-// Combine and sort all timeline events
 function createTimeline(): TimelineEvent[] {
   const events: TimelineEvent[] = [];
 
-  // Add experience
   experience.forEach(exp => {
     events.push({
       type: 'experience',
@@ -33,11 +30,9 @@ function createTimeline(): TimelineEvent[] {
       endDate: exp.end,
       description: exp.bullets?.[0] || '',
       icon: 'briefcase',
-      color: 'brand'
     });
   });
 
-  // Add education
   education.forEach(edu => {
     events.push({
       type: 'education',
@@ -47,25 +42,20 @@ function createTimeline(): TimelineEvent[] {
       endDate: edu.end,
       description: edu.details?.[0] || '',
       icon: 'education',
-      color: 'purple'
     });
   });
 
-  // Add highlights
   highlights.forEach(highlight => {
     events.push({
       type: 'achievement',
       title: highlight.title,
-      // Avoid redundant subtitle for achievements; badge already indicates type
       subtitle: '',
       date: highlight.date,
       description: highlight.note || '',
       icon: 'trophy',
-      color: 'yellow'
     });
   });
 
-  // Sort by date (most recent first)
   return events.sort((a, b) => {
     const dateA = new Date(a.date).getTime();
     const dateB = new Date(b.date).getTime();
@@ -88,123 +78,101 @@ export function TimelineTile({ isExpanded }: TimelineTileProps) {
       if (!map.has(y)) map.set(y, []);
       map.get(y)!.push(ev);
     }
-    // sort each group by date desc
     for (const [y, arr] of map) {
       arr.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       map.set(y, arr);
     }
-    // return array of [year, events] sorted by year desc
     return Array.from(map.entries()).sort(([a], [b]) => parseInt(b) - parseInt(a));
   }, [displayEvents]);
 
-  return (
-    <div className="flex flex-col">
-      {/* Header */}
-      <div className="flex-shrink-0 mb-4">
-        <h2 className="text-xl md:text-2xl font-bold text-text-primary mb-2">
-          Career Timeline
-        </h2>
-        <p className="text-text-muted text-sm">
-          {isExpanded 
-            ? 'Complete journey of education, experience, and achievements'
-            : 'Recent milestones and career highlights'
-          }
-        </p>
-      </div>
+  const dotColor = (type: string) => {
+    switch (type) {
+      case 'experience': return 'bg-brand';
+      case 'education': return 'bg-accent';
+      case 'achievement': return 'bg-highlight';
+      default: return 'bg-brand';
+    }
+  };
 
-      {/* Timeline (grouped by year in responsive grid) */}
-      <div className="flex-1 overflow-hidden px-1 md:px-0">
-        <div className={`${isExpanded ? 'overflow-y-auto h-full pr-1' : ''}`}>
-          <div className="space-y-6 pb-4">
-            {groups.map(([year, items]) => (
-              <div key={year} className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="text-sm tracking-wider uppercase text-text-muted">{year}</div>
-                  <div className="h-px flex-1 bg-white/10" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mx-1 md:mx-0">
-                  {items.map((event, idx) => (
-                    <m.div
-                      key={`${event.type}-${event.title}-${idx}`}
-                      initial={false}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.25 }}
-                      className="rounded-xl border border-white/10 bg-white/5 p-4"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-2 text-xs">
-                          <span className={`inline-flex items-center justify-center w-6 h-6 rounded-md text-black ${
-                            event.type === 'experience' ? 'bg-brand' : event.type === 'education' ? 'bg-purple-500' : 'bg-yellow-500'
-                          }`}>
-                            <Icon name={event.icon} size={12} />
-                          </span>
-                          <span className="text-text-muted flex items-center gap-1 leading-none">
-                            <Icon name="calendar" size={12} /> {event.date}{event.endDate && ` - ${event.endDate}`}
-                          </span>
-                        </div>
-                        <span className="inline-flex items-center" aria-hidden={true}>
-                          <span className={
-                            `w-2 h-2 rounded-full ${
-                              event.type === 'experience' ? 'bg-brand' :
-                              event.type === 'education' ? 'bg-purple-400' :
-                              'bg-yellow-400'
-                            }`
-                          } />
-                          <span className="sr-only">{event.type} event</span>
-                        </span>
-                      </div>
-                      <div className="mt-2 space-y-1">
-                        <div className="font-semibold text-text-primary text-sm md:text-base leading-snug">{event.title}</div>
+  return (
+    <section>
+      <p className="section-kicker">Timeline</p>
+      <h2 className="mt-1 font-display text-2xl text-text-primary">
+        Career timeline
+      </h2>
+      <p className="mt-2 text-sm text-text-muted">
+        {isExpanded
+          ? 'Complete journey of education, experience, and achievements'
+          : 'Recent milestones and career highlights'
+        }
+      </p>
+
+      <div className="mt-6 space-y-6">
+        {groups.map(([year, items]) => (
+          <div key={year} className="space-y-3">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-sm tracking-wider text-text-muted">{year}</span>
+              <div className="h-px flex-1 bg-line" />
+            </div>
+            <div className="space-y-2">
+              {items.map((event, idx) => (
+                <m.div
+                  key={`${event.type}-${event.title}-${idx}`}
+                  variants={fadeUp(idx * 0.06)}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-40px' }}
+                  className="flex gap-3 py-2"
+                >
+                  <div className="flex flex-col items-center pt-1.5">
+                    <span className={`h-2.5 w-2.5 ${dotColor(event.type)}`} />
+                    <div className="mt-1 w-px flex-1 bg-line" />
+                  </div>
+                  <div className="flex-1 min-w-0 pb-2">
+                    <div className="flex items-start gap-2">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded text-text-muted">
+                        <Icon name={event.icon} size={12} />
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-text-primary leading-snug">{event.title}</p>
                         {event.subtitle && event.type !== 'achievement' && (
-                          <div className="text-brand text-[13px] md:text-sm">{event.subtitle}</div>
+                          <p className="text-xs text-brand/70">{event.subtitle}</p>
                         )}
-                        {event.location && (
-                          <div className="text-xs text-text-muted flex items-center gap-1 leading-none">
-                            <Icon name="location" size={12} /> {event.location}
-                          </div>
-                        )}
+                        <p className="font-mono text-[11px] text-text-muted mt-0.5">
+                          {event.date}{event.endDate && ` — ${event.endDate}`}
+                        </p>
                         {event.description && (
-                          <p className="text-xs md:text-sm text-text-muted leading-relaxed mt-1">
+                          <p className="text-xs text-text-muted leading-relaxed mt-1">
                             {!isExpanded && event.description.length > 120
                               ? `${event.description.substring(0, 120)}...`
                               : event.description}
                           </p>
                         )}
                       </div>
-                    </m.div>
-                  ))}
-                </div>
-              </div>
-            ))}
+                    </div>
+                  </div>
+                </m.div>
+              ))}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
 
-      {/* Footer with summary stats */}
-      <div className="flex-shrink-0 pt-4 border-t border-white/10">
-        <div className="flex justify-around text-center">
-          <div>
-            <div className="text-lg font-bold text-text-primary">
-              {experience.length}
-            </div>
-            <div className="text-xs text-text-muted">Roles</div>
-          </div>
-          <div>
-            <div className="text-lg font-bold text-text-primary">
-              {education.length}
-            </div>
-            <div className="text-xs text-text-muted">Degrees</div>
-          </div>
-          <div>
-            <div className="text-lg font-bold text-text-primary">
-              {highlights.length}
-            </div>
-            <div className="text-xs text-text-muted">Achievements</div>
-          </div>
+      {/* Stats */}
+      <div className="mt-6 flex gap-6 border-t border-line pt-4">
+        <div>
+          <p className="text-lg font-bold text-text-primary">{experience.length}</p>
+          <p className="text-xs text-text-muted">Roles</p>
         </div>
-        
-        {/* No click hint; static tiles */}
+        <div>
+          <p className="text-lg font-bold text-text-primary">{education.length}</p>
+          <p className="text-xs text-text-muted">Degrees</p>
+        </div>
+        <div>
+          <p className="text-lg font-bold text-text-primary">{highlights.length}</p>
+          <p className="text-xs text-text-muted">Achievements</p>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,0 +1,55 @@
+{
+  "generatedAt": "2026-03-13T07:51:50.890Z",
+  "tags": [
+    "Backend",
+    "Career",
+    "Engineering",
+    "Execution",
+    "Observability",
+    "Reliability",
+    "SRE",
+    "Systems",
+    "UX"
+  ],
+  "posts": [
+    {
+      "slug": "2026-02-28-from-alert-noise-to-signal",
+      "title": "From Alert Noise to Signal",
+      "date": "2026-02-28",
+      "summary": "What changed when we redesigned alerting around ownership and triage speed.",
+      "tags": [
+        "SRE",
+        "Observability",
+        "Systems"
+      ],
+      "draft": false,
+      "readingTimeMinutes": 1
+    },
+    {
+      "slug": "2026-02-12-shipping-intern-projects-like-products",
+      "title": "Shipping Intern Projects Like Products",
+      "date": "2026-02-12",
+      "summary": "How I scope projects so they survive beyond demo day.",
+      "tags": [
+        "Career",
+        "Execution",
+        "Engineering"
+      ],
+      "draft": false,
+      "readingTimeMinutes": 1
+    },
+    {
+      "slug": "2026-01-30-designing-for-operator-calm",
+      "title": "Designing for Operator Calm",
+      "date": "2026-01-30",
+      "summary": "Why great backend tools should reduce cognitive load during incidents.",
+      "tags": [
+        "Backend",
+        "UX",
+        "Reliability"
+      ],
+      "draft": false,
+      "readingTimeMinutes": 1
+    }
+  ]
+}

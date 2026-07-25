@@ -4,17 +4,21 @@ import react from '@vitejs/plugin-react-swc'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: './',
+  base: '/website/',
   build: {
     rollupOptions: {
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'vendor-react';
+            // three.js check BEFORE react (since @react-three contains "react")
+            if (id.includes('three') || id.includes('@react-three')) {
+              return 'vendor-three';
             }
             if (id.includes('framer-motion')) {
               return 'vendor-motion';
+            }
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'vendor-react';
             }
           }
         },
@@ -36,6 +40,6 @@ export default defineConfig({
   },
   // Optimize dependencies
   optimizeDeps: {
-    include: ['react', 'react-dom', 'framer-motion'],
+    include: ['react', 'react-dom', 'framer-motion', 'react-router-dom'],
   },
 })

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+<title>Rohan Bahl — Blog</title>
+<link>https://rb9823.github.io/website/blog</link>
+<description>Engineering notes on backend, platform reliability, and shipping systems.</description>
+<lastBuildDate>Fri, 13 Mar 2026 07:51:50 GMT</lastBuildDate>
+<item><title>From Alert Noise to Signal</title><link>https://rb9823.github.io/website/blog/2026-02-28-from-alert-noise-to-signal</link><guid>https://rb9823.github.io/website/blog/2026-02-28-from-alert-noise-to-signal</guid><pubDate>Sat, 28 Feb 2026 00:00:00 GMT</pubDate><description>What changed when we redesigned alerting around ownership and triage speed.</description></item><item><title>Shipping Intern Projects Like Products</title><link>https://rb9823.github.io/website/blog/2026-02-12-shipping-intern-projects-like-products</link><guid>https://rb9823.github.io/website/blog/2026-02-12-shipping-intern-projects-like-products</guid><pubDate>Thu, 12 Feb 2026 00:00:00 GMT</pubDate><description>How I scope projects so they survive beyond demo day.</description></item><item><title>Designing for Operator Calm</title><link>https://rb9823.github.io/website/blog/2026-01-30-designing-for-operator-calm</link><guid>https://rb9823.github.io/website/blog/2026-01-30-designing-for-operator-calm</guid><pubDate>Fri, 30 Jan 2026 00:00:00 GMT</pubDate><description>Why great backend tools should reduce cognitive load during incidents.</description></item>
+</channel>
+</rss>

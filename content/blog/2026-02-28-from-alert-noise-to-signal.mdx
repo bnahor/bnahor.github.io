@@ -1,0 +1,29 @@
+---
+title: "From Alert Noise to Signal"
+date: "2026-02-28"
+summary: "What changed when we redesigned alerting around ownership and triage speed."
+tags: ["SRE", "Observability", "Systems"]
+draft: false
+---
+
+Most alerting stacks fail for a simple reason: they optimize for _detection_ but not for _resolution_.
+
+## The practical shift
+
+We moved from dashboard-first triage to owner-first triage:
+
+- Every alert maps to an owner and an escalation path.
+- Every alert includes a recovery playbook.
+- Every alert is tuned against actionability, not raw sensitivity.
+
+```ts
+const shouldPage = (signalScore: number, ownerAvailable: boolean) => {
+  return signalScore >= 0.85 && ownerAvailable;
+};
+```
+
+The result was fewer noisy notifications and faster recovery loops.
+
+## What I keep doing
+
+I now treat incident ergonomics as a product surface, not an ops afterthought.
