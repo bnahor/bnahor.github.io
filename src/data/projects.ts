@@ -16,6 +16,8 @@ export const projects: Project[] = [
     event: 'Cursor Hackathon 2025',
     date: 'Oct–Nov 2025',
     role: 'ML Engineer · Team Lead',
+    href: 'https://github.com/samuelleecong/cursor_hack/tree/main/gemini-os-starter',
+    demoHref: 'https://storyforge-six-woad.vercel.app',
     description:
       'A 2D game engine that turns one prompt into a playable world, with generated scenes, dialogue, art, and character audio.',
     impact: 'Finalist · Top 4% · 15 of 400 projects',

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Icon } from './Icon';
 import { profile } from '../data/profile';
 
@@ -9,6 +10,17 @@ const navItems = [
 ] as const;
 
 export function SiteHeader() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [menuOpen]);
+
   return (
     <header className="site-header">
       <a className="wordmark" href="#top" aria-label="Rohan Bahl, back to top">
@@ -30,6 +42,42 @@ export function SiteHeader() {
         Résumé
         <Icon name="arrowRight" size={14} />
       </a>
+
+      <button
+        type="button"
+        className="menu-toggle"
+        aria-expanded={menuOpen}
+        aria-controls="mobile-nav"
+        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        onClick={() => setMenuOpen((open) => !open)}
+      >
+        <Icon name={menuOpen ? 'close' : 'menu'} size={20} />
+      </button>
+
+      {menuOpen && (
+        <nav id="mobile-nav" className="mobile-nav" aria-label="Primary navigation">
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              className="mobile-nav-link"
+              href={item.href}
+              onClick={() => setMenuOpen(false)}
+            >
+              {item.label}
+            </a>
+          ))}
+          <a
+            className="mobile-nav-link mobile-nav-link--resume"
+            href={profile.links.resume}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => setMenuOpen(false)}
+          >
+            Résumé
+            <Icon name="arrowRight" size={14} />
+          </a>
+        </nav>
+      )}
     </header>
   );
 }

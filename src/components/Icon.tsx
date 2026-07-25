@@ -5,7 +5,9 @@ type IconName =
   | 'clipboard'
   | 'check'
   | 'arrowRight'
-  | 'arrowDown';
+  | 'arrowDown'
+  | 'menu'
+  | 'close';
 
 interface IconProps {
   name: IconName;
@@ -15,14 +17,14 @@ interface IconProps {
 
 export function Icon({ name, size = 16, className = '' }: IconProps) {
   const common = {
-    // Use style to ensure consistent CSS sizing in flex/inline contexts
-    style: { width: `${size}px`, height: `${size}px` },
+    // Inline style keeps consistent sizing and block/non-shrinking behaviour in
+    // flex/inline contexts without depending on utility classes.
+    style: { width: `${size}px`, height: `${size}px`, display: 'block', flexShrink: 0 },
     viewBox: '0 0 24 24',
     fill: 'currentColor',
     xmlns: 'http://www.w3.org/2000/svg',
     preserveAspectRatio: 'xMidYMid meet',
-    // Block-level, non-shrinking to avoid width variance across contexts
-    className: `block flex-none ${className}`,
+    className,
   } as const;
 
   switch (name) {
@@ -66,6 +68,18 @@ export function Icon({ name, size = 16, className = '' }: IconProps) {
       return (
         <svg {...common}>
           <path d="M5 11l7 7 7-7-1.4-1.4L13 15.2V4h-2v11.2L6.4 9.6 5 11Z"/>
+        </svg>
+      );
+    case 'menu':
+      return (
+        <svg {...common}>
+          <path d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z" />
+        </svg>
+      );
+    case 'close':
+      return (
+        <svg {...common}>
+          <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7l1.4-1.4L10.6 10.6l6.3-6.3 1.4 1.4Z" />
         </svg>
       );
     default:

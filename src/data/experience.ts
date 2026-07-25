@@ -9,6 +9,8 @@ export type Experience = {
   story?: string;
   metrics: string[];
   bullets: string[];
+  // How many bullets to show before the "Show more" disclosure.
+  featuredBulletCount: number;
   tech: string[];
 };
 
@@ -27,12 +29,13 @@ export const experience: Experience[] = [
     metrics: ['1.5 months unblocked', '20 min → <2 min sync', '50+ operators'],
     bullets: [
       'The fix combined raw-derivative 1-Euro filtering, inter-MCP distance constraints, and Jakobsen relaxation.',
+      'I wrote the clock-authority layer for Vive Trackers and ZED Boxes on Jetson Orin. It kept video, poses, and IMU samples aligned for 50+ operators across 1,000+ hours.',
+      'Three cameras arrived without a shared clock. A VLM alignment pass plus cross-correlation fallback cut session sync time by 90%.',
       'I replaced three weeks of manual planning with a sub-minute allocation workflow across Environment, Scene, Task, and Operator.',
       'I built the mobile capture app in under a week. Native Swift, ARKit, Kotlin, CameraX, and ARCore sit behind one Dart interface.',
-      'Three cameras arrived without a shared clock. A VLM alignment pass plus cross-correlation fallback cut session sync time by 90%.',
-      'I wrote the clock-authority layer for Vive Trackers and ZED Boxes on Jetson Orin. It kept video, poses, and IMU samples aligned for 50+ operators across 1,000+ hours.',
       'Browser uploads had to survive weak connections and 3–4K-file batches. Resumable GCS uploads, retry, duplicate detection, and offset recovery stopped the daily failures.',
     ],
+    featuredBulletCount: 3,
     tech: [
       'Python',
       'FastAPI',
@@ -54,12 +57,14 @@ export const experience: Experience[] = [
     end: 'Aug 2025',
     summary:
       'Reliability tooling for the SRE and global TradeOps teams.',
+    story:
+      'A routine Grafana infrastructure update was a ten-hour manual slog across dev, staging, and production. I wrote an Ansible and Python toolkit that turned it into a five-minute job.',
     metrics: ['4 services', '99% less Grafana toil', '95% faster retrieval'],
     bullets: [
       'The SRE team needed Grafana alerts routed in under a second. I replaced the legacy path with four Spring Boot services over ActiveMQ and Redis.',
-      'A Grafana infrastructure update took ten hours. The Ansible and Python toolkit made it a five-minute job across dev, staging, and production.',
       'TradeOps used to wait 60 seconds for a FIX log. The React and Spring Boot viewer returned it in three and was adopted by 50+ users.',
     ],
+    featuredBulletCount: 2,
     tech: ['Spring Boot', 'ActiveMQ', 'Redis', 'React', 'TypeScript', 'Ansible', 'Grafana'],
   },
   {
@@ -70,12 +75,14 @@ export const experience: Experience[] = [
     end: 'Mar 2025',
     summary:
       'Telemetry infrastructure and field tools for autonomous robots.',
+    story:
+      'Robots kept losing data whenever LTE dropped mid-run in the field. Batching writes with offline caching and recovery made the telemetry 40% more reliable.',
     metrics: ['5M+ records / run', '30% fewer diagnostics', '40% more reliable data'],
     bullets: [
       'Each telemetry run produced more than five million sensor records. I built the Lambda, S3, and DynamoDB pipeline that validated and processed them.',
       'A Next.js and Mapbox operations view put live telemetry and robot location in one place, cutting manual field diagnostics by 30%.',
-      'Intermittent LTE kept corrupting field data. Batching and offline caching improved reliability by 40%.',
     ],
+    featuredBulletCount: 2,
     tech: ['AWS Lambda', 'S3', 'DynamoDB', 'Next.js', 'TypeScript', 'Mapbox'],
   },
   {
@@ -92,6 +99,7 @@ export const experience: Experience[] = [
       'Order parsing and image cleanup were manual. One Python pipeline more than doubled throughput.',
       'Fixing schema mismatches, API failures, and timestamp errors cut production incidents by 55% and made room for two product lines.',
     ],
+    featuredBulletCount: 2,
     tech: ['Python', 'Flask', 'MongoDB', 'Slack API', 'Vercel', 'CI/CD'],
   },
   {
@@ -108,6 +116,7 @@ export const experience: Experience[] = [
       'Sixty automated end-to-end tests in Tricentis Tosca reduced manual QA by 40%.',
       'Shared triage and test plans across development and support shortened average resolution time by 30%.',
     ],
+    featuredBulletCount: 2,
     tech: ['Tricentis Tosca', 'JIRA', 'SAP'],
   },
 ];

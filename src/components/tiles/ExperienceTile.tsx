@@ -15,14 +15,8 @@ export function ExperienceTile() {
       </div>
 
       <div className="experience-console">
-        <div className="log-header" aria-hidden="true">
-          <span>TIME AXIS</span>
-          <span>ENTRY</span>
-          <span>FIELD NOTES</span>
-        </div>
-        {experience.map((item, index) => {
-          const visibleBulletCount = item.current ? 2 : index === 1 ? 2 : 1;
-          const remainingBullets = item.bullets.slice(visibleBulletCount);
+        {experience.map((item) => {
+          const remainingBullets = item.bullets.slice(item.featuredBulletCount);
 
           return (
             <article
@@ -36,12 +30,9 @@ export function ExperienceTile() {
               </div>
 
               <div className="log-identity">
-                <div className="log-index" aria-hidden="true">
-                  LOG {String(index + 1).padStart(2, '0')}
-                </div>
                 <p className="experience-company">
                   {item.company}
-                  {item.current && <span className="current-pill">Recording</span>}
+                  {item.current && <span className="current-pill">Current</span>}
                 </p>
                 <h3>{item.role}</h3>
                 <div className="experience-location">
@@ -67,7 +58,7 @@ export function ExperienceTile() {
                 </div>
 
                 <ul className="impact-list">
-                  {item.bullets.slice(0, visibleBulletCount).map((bullet) => (
+                  {item.bullets.slice(0, item.featuredBulletCount).map((bullet) => (
                     <li key={bullet}>{bullet}</li>
                   ))}
                 </ul>
@@ -75,7 +66,7 @@ export function ExperienceTile() {
                 {remainingBullets.length > 0 && (
                   <details className="experience-more">
                     <summary>
-                      Open full log ({remainingBullets.length})
+                      Show {remainingBullets.length} more
                       <Icon name="arrowDown" size={14} />
                     </summary>
                     <ul className="impact-list impact-list--additional">

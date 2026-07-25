@@ -26,12 +26,11 @@ export function ProjectsTile() {
               whileHover={{ y: -5 }}
             >
               <div className="project-topline">
-                <span>BUILD {String(index + 1).padStart(2, '0')}</span>
+                <span>{project.event}</span>
                 <span>{project.date}</span>
               </div>
 
               <div className="project-heading">
-                <p>{project.event}</p>
                 <h3>{project.title}</h3>
                 <span>{project.role}</span>
               </div>

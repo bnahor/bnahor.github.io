@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { outcomes, type Outcome } from '../data/highlights';
-import { SignalTrace } from './SignalTrace';
 
 function AnimatedValue({ outcome }: { outcome: Outcome }) {
   const reduceMotion = useReducedMotion();
@@ -39,24 +38,17 @@ export function OutcomeRail() {
   return (
     <section className="outcome-rail" aria-labelledby="signal-heading">
       <div className="outcome-rail-intro">
-        <span className="eyebrow">FIELD READOUT / 04 CH</span>
         <h2 id="signal-heading">What changed</h2>
         <p>Four recent results from capture, planning, and reliability work.</p>
       </div>
 
       <div className="outcome-list">
-        {outcomes.map((outcome, index) => (
-          <article
-            key={outcome.label}
-            className="outcome"
-          >
-            <div className="outcome-topline">
-              <span>CH {String(index + 1).padStart(2, '0')}</span>
-              <span>STABLE</span>
-            </div>
-            <strong><AnimatedValue outcome={outcome} /></strong>
+        {outcomes.map((outcome) => (
+          <article key={outcome.label} className="outcome">
+            <strong>
+              <AnimatedValue outcome={outcome} />
+            </strong>
             <span>{outcome.label}</span>
-            <SignalTrace values={outcome.trace} />
           </article>
         ))}
       </div>

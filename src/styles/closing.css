@@ -1,0 +1,139 @@
+.closing-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  border: 1px solid var(--line);
+}
+
+.education-tile,
+.contact-tile {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(2rem, 4vw, 4rem);
+  background: rgba(8, 9, 7, 0.82);
+}
+
+.education-tile {
+  border-right: 1px solid var(--line);
+}
+
+.education-list {
+  margin-top: 3rem;
+}
+
+.education-item {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.education-index {
+  color: var(--signal);
+  font: 400 0.74rem/1.4 var(--mono);
+}
+
+.education-item h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.45rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.education-item p {
+  margin: 0.55rem 0 0;
+  color: var(--soft);
+  font-size: 0.83rem;
+  line-height: 1.5;
+}
+
+.education-detail {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--faint);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.education-date {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--faint);
+  font: 400 0.74rem/1 var(--mono);
+  white-space: nowrap;
+}
+
+.contact-tile {
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-tile::after {
+  position: absolute;
+  right: -9rem;
+  bottom: -9rem;
+  width: 18rem;
+  height: 18rem;
+  border: 1px solid var(--line-hot);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 3rem rgba(184, 255, 61, 0.025),
+    0 0 0 6rem rgba(184, 255, 61, 0.015);
+  content: '';
+}
+
+.contact-copy {
+  max-width: 30rem;
+  margin: 2rem 0 0;
+  color: var(--soft);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.contact-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 1.4rem 0 0;
+  color: var(--data-bright);
+  font: 500 0.74rem/1 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.contact-status i {
+  width: 6px;
+  height: 6px;
+  background: var(--signal);
+  box-shadow: 0 0 9px var(--signal);
+  animation: signal-pulse 2s steps(1) infinite;
+}
+
+.contact-address {
+  margin: 1.5rem 0 0;
+  color: var(--faint);
+  font: 400 0.78rem/1.4 var(--mono);
+}
+
+.contact-links {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+  color: var(--signal);
+}
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.5rem 0 2.5rem;
+  border-top: 1px solid var(--line);
+  color: var(--faint);
+  font: 400 0.74rem/1.4 var(--mono);
+  text-transform: uppercase;
+}
+
