@@ -15,51 +15,30 @@
 
 .wordmark {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   justify-self: start;
-  gap: 0.75rem;
-}
-
-.wordmark-mark {
-  position: relative;
-  display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
-  place-items: center;
-  border: 1px solid var(--signal);
-}
-
-.wordmark-mark::before,
-.wordmark-mark::after {
-  position: absolute;
-  background: var(--signal);
-  content: '';
-}
-
-.wordmark-mark::before {
-  width: 1.1rem;
-  height: 1px;
-}
-
-.wordmark-mark::after {
-  width: 1px;
-  height: 1.1rem;
-}
-
-.wordmark-mark i {
-  width: 5px;
-  height: 5px;
-  border: 1px solid var(--black);
-  background: var(--signal);
-  box-shadow: 0 0 12px var(--signal);
-}
-
-.wordmark-name {
+  gap: 0.4ch;
   font-family: var(--display);
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+  line-height: 1;
+}
+
+.wordmark-given {
+  color: var(--ghost);
+}
+
+/* The surname sits back a step so the mark reads as set type rather than a
+   logo, and resolves to full contrast on hover. */
+.wordmark-family {
+  color: var(--faint);
+  transition: color 180ms ease;
+}
+
+.wordmark:hover .wordmark-family {
+  color: var(--ghost);
 }
 
 .site-nav {
@@ -96,7 +75,7 @@
 }
 
 .nav-link:hover {
-  color: var(--signal);
+  color: var(--ghost);
 }
 
 .nav-link:hover::after,
@@ -113,14 +92,14 @@
   gap: 0.5rem;
   padding: 0.75rem 0.9rem;
   border: 1px solid var(--line-hot);
-  color: var(--signal);
+  color: var(--ghost);
   transition:
     color 160ms ease,
     background-color 160ms ease;
 }
 
 .header-resume:hover {
-  background: var(--signal);
+  background: var(--ghost);
   color: var(--black);
 }
 
@@ -131,39 +110,87 @@
   justify-self: end;
   width: 2.75rem;
   height: 2.75rem;
+  margin-right: -0.6rem;
   padding: 0;
-  border: 1px solid var(--line-hot);
+  border: 0;
   background: transparent;
-  color: var(--signal);
+  color: var(--ghost);
   cursor: pointer;
 }
 
+/* Fixed to the viewport rather than nested in the header, so opening the menu
+   overlays the page instead of pushing it down. Sits under the header's
+   z-index so the close control stays visible and clickable. */
 .mobile-nav {
+  position: fixed;
+  z-index: 40;
   display: none;
-  grid-column: 1 / -1;
   flex-direction: column;
-  margin: 0 -3vw;
-  padding: 0.5rem 3vw 1rem;
-  border-top: 1px solid var(--line);
+  inset: 0;
+  padding: 6.5rem 1.25rem 2.5rem;
+  background: var(--black);
+  animation: menu-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.mobile-nav:focus {
+  outline: none;
+}
+
+/* Auto block margins centre the list in the free space and hold the footer to
+   the bottom edge. */
+.mobile-nav-list {
+  display: flex;
+  flex-direction: column;
+  margin: auto 0;
+  padding: 0;
+  list-style: none;
 }
 
 .mobile-nav-link {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--line);
-  color: var(--soft);
-  font: 500 0.9rem/1 var(--mono);
-  letter-spacing: 0.05em;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  color: var(--paper);
+  font-family: var(--display);
+  font-size: clamp(2.6rem, 13vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
   text-transform: uppercase;
 }
 
-.mobile-nav-link:last-child {
-  border-bottom: 0;
+.mobile-nav-link span {
+  color: var(--faint);
+  font: 500 0.72rem/1 var(--mono);
+  letter-spacing: 0.08em;
 }
 
-.mobile-nav-link--resume {
-  color: var(--signal);
+.mobile-nav-foot {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.mobile-nav-resume {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 1.2rem;
+  background: var(--ghost);
+  color: var(--black);
+  font: 500 0.78rem/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mobile-nav-email {
+  color: var(--soft);
+  font: 500 0.8rem/1 var(--mono);
+  letter-spacing: 0.02em;
 }
 

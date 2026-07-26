@@ -29,7 +29,7 @@
 }
 
 .education-index {
-  color: var(--signal);
+  color: var(--ghost);
   font: 400 0.74rem/1.4 var(--mono);
 }
 
@@ -79,8 +79,8 @@
   border: 1px solid var(--line-hot);
   border-radius: 50%;
   box-shadow:
-    0 0 0 3rem rgba(184, 255, 61, 0.025),
-    0 0 0 6rem rgba(184, 255, 61, 0.015);
+    0 0 0 3rem rgba(248, 248, 255, 0.02),
+    0 0 0 6rem rgba(248, 248, 255, 0.012);
   content: '';
 }
 
@@ -97,7 +97,7 @@
   align-items: center;
   gap: 0.55rem;
   margin: 1.4rem 0 0;
-  color: var(--data-bright);
+  color: var(--ghost);
   font: 500 0.74rem/1 var(--mono);
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -106,8 +106,8 @@
 .contact-status i {
   width: 6px;
   height: 6px;
-  background: var(--signal);
-  box-shadow: 0 0 9px var(--signal);
+  background: var(--ghost);
+  box-shadow: 0 0 9px var(--ghost);
   animation: signal-pulse 2s steps(1) infinite;
 }
 
@@ -124,7 +124,7 @@
   flex-wrap: wrap;
   gap: 1.25rem;
   margin-top: 2.5rem;
-  color: var(--signal);
+  color: var(--ghost);
 }
 
 .site-footer {

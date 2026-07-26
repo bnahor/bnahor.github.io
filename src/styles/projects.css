@@ -6,7 +6,7 @@
   border-top: 1px solid var(--line-hot);
   border-bottom: 1px solid var(--line-hot);
   background:
-    linear-gradient(90deg, transparent 49.95%, rgba(184, 255, 61, 0.05) 50%, transparent 50.05%),
+    linear-gradient(90deg, transparent 49.95%, rgba(248, 248, 255, 0.04) 50%, transparent 50.05%),
     var(--panel);
 }
 
@@ -16,8 +16,8 @@
   left: 7vw;
   width: 7px;
   height: 7px;
-  background: var(--signal);
-  box-shadow: 0 0 12px var(--signal);
+  background: var(--ghost);
+  box-shadow: 0 0 12px var(--ghost);
   content: '';
 }
 
@@ -61,8 +61,19 @@
 
 .project-card:hover {
   z-index: 2;
-  background: var(--signal);
+  background: var(--ghost);
   color: var(--black);
+}
+
+.project-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--faint);
+  font: 500 0.72rem/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .project-card:hover .project-topline,
@@ -118,7 +129,7 @@
 
 .project-impact {
   margin: 1rem 0 0;
-  color: var(--data-bright);
+  color: var(--ghost);
   font: 500 0.76rem/1.4 var(--mono);
   text-transform: uppercase;
 }
@@ -134,7 +145,7 @@
 .project-links {
   display: flex;
   gap: 1rem;
-  color: var(--signal);
+  color: var(--ghost);
 }
 
 .project-links a,

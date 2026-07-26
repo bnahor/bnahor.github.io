@@ -53,7 +53,7 @@
 }
 
 .outcome:hover {
-  background: var(--signal-dim);
+  background: var(--ghost-dim);
 }
 
 .outcome strong {

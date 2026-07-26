@@ -23,7 +23,7 @@
   left: 0;
   z-index: -1;
   background:
-    linear-gradient(90deg, transparent, rgba(184, 255, 61, 0.045), transparent);
+    linear-gradient(90deg, transparent, rgba(248, 248, 255, 0.04), transparent);
   content: '';
   opacity: 0;
   transform: translateX(-50%);
@@ -62,7 +62,7 @@
 }
 
 .log-entry--current .log-time::after {
-  background: linear-gradient(var(--signal), var(--line));
+  background: linear-gradient(var(--ghost), var(--line));
 }
 
 .log-node {
@@ -78,10 +78,10 @@
 }
 
 .log-entry--current .log-node {
-  background: var(--signal);
+  background: var(--ghost);
   box-shadow:
-    0 0 0 1px var(--signal),
-    0 0 13px var(--signal);
+    0 0 0 1px var(--ghost),
+    0 0 13px var(--ghost);
 }
 
 .log-time time,
@@ -116,14 +116,14 @@
   align-self: center;
   padding: 0.28rem 0.5rem;
   border: 1px solid var(--line-hot);
-  color: var(--signal);
+  color: var(--ghost);
   font: 500 0.7rem/1 var(--mono);
   letter-spacing: 0.06em;
 }
 
 .log-identity h3 {
   margin: 0.85rem 0 0;
-  color: var(--data-bright);
+  color: var(--ghost);
   font: 500 0.86rem/1.3 var(--mono);
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -148,8 +148,8 @@
 .incident-story {
   margin: 0 0 1.5rem;
   padding: 1.3rem 1.4rem;
-  border-left: 2px solid var(--signal);
-  background: var(--signal-dim);
+  border-left: 2px solid var(--ghost);
+  background: var(--ghost-dim);
   color: var(--text);
   font-family: 'Newsreader', Georgia, serif;
   font-size: clamp(1.15rem, 1.7vw, 1.45rem);
@@ -160,7 +160,7 @@
 .incident-story span {
   display: block;
   margin-bottom: 0.7rem;
-  color: var(--signal);
+  color: var(--ghost);
   font: 500 0.72rem/1 var(--mono);
   letter-spacing: 0.09em;
 }
@@ -175,7 +175,7 @@
 .metric-row span {
   padding: 0.5rem 0.65rem;
   border: 1px solid var(--line);
-  color: var(--data-bright);
+  color: var(--ghost);
   font: 400 0.74rem/1 var(--mono);
 }
 
@@ -201,7 +201,7 @@
   left: 0;
   width: 0.45rem;
   height: 1px;
-  background: var(--data);
+  background: var(--faint);
   content: '';
 }
 
@@ -213,7 +213,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--signal);
+  color: var(--ghost);
   cursor: pointer;
   font: 500 0.76rem/1 var(--mono);
   letter-spacing: 0.04em;

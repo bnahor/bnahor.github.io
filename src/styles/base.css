@@ -4,20 +4,18 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --black: #050505;
-  --panel: #0a0b09;
-  --panel-2: #10110e;
+  --panel: #0a0a0b;
+  /* Two-colour palette. Everything reads off warm off-white for body copy and
+     cool ghost white for emphasis; with no hue to lean on, hierarchy is carried
+     by weight, scale and opacity instead. */
   --paper: #efefe8;
-  --text: #f0f1eb;
-  --soft: #a2a69c;
-  --faint: #8c9286;
-  --signal: #b8ff3d;
-  --signal-bright: #d5ff8b;
-  --signal-dim: rgba(184, 255, 61, 0.12);
-  --data: #8fca36;
-  --data-bright: #a9e84a;
-  --data-dim: rgba(143, 202, 54, 0.1);
-  --line: #292c26;
-  --line-hot: rgba(184, 255, 61, 0.48);
+  --ghost: #f8f8ff;
+  --ghost-dim: rgba(248, 248, 255, 0.1);
+  --text: #efefe8;
+  --soft: rgba(239, 239, 232, 0.68);
+  --faint: rgba(239, 239, 232, 0.45);
+  --line: rgba(248, 248, 255, 0.13);
+  --line-hot: rgba(248, 248, 255, 0.38);
   --display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
   --mono: 'IBM Plex Mono', monospace;
 }
@@ -90,12 +88,12 @@ summary {
 }
 
 ::selection {
-  background: var(--signal);
+  background: var(--ghost);
   color: var(--black);
 }
 
 :focus-visible {
-  outline: 2px solid var(--signal);
+  outline: 2px solid var(--ghost);
   outline-offset: 4px;
 }
 
@@ -105,7 +103,7 @@ summary {
   top: 0.75rem;
   left: 0.75rem;
   padding: 0.75rem 1rem;
-  background: var(--signal);
+  background: var(--ghost);
   color: var(--black);
   font: 500 0.78rem/1 var(--mono);
   transform: translateY(-180%);
@@ -129,10 +127,10 @@ summary {
   opacity: 0.5;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(184, 255, 61, 0.036) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(184, 255, 61, 0.036) 1px, transparent 1px),
-    linear-gradient(rgba(184, 255, 61, 0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(184, 255, 61, 0.018) 1px, transparent 1px);
+    linear-gradient(rgba(248, 248, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(248, 248, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(248, 248, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(248, 248, 255, 0.015) 1px, transparent 1px);
   background-size:
     96px 96px,
     96px 96px,

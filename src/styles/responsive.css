@@ -11,6 +11,17 @@
   }
 }
 
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes signal-pulse {
   0%,
   66% {
@@ -27,19 +38,13 @@
 }
 
 @media (max-width: 1080px) {
-  .hero-tile {
-    grid-template-columns: 1fr;
-  }
-
   .hero-copy {
     min-height: auto;
     padding-right: 0;
   }
 
-  .hero-instrument {
-    padding: 2.5rem;
-    border-top: 1px solid var(--line);
-    border-left: 0;
+  .hero-body {
+    grid-template-columns: 1fr;
   }
 
   .outcome-rail {
@@ -82,8 +87,6 @@
 
   .mobile-nav {
     display: flex;
-    margin: 0 -1rem;
-    padding: 0.5rem 1rem 1rem;
   }
 
   .site-main,
@@ -123,15 +126,6 @@
 
   .hero-intro {
     font-size: 0.98rem;
-  }
-
-  .hero-instrument {
-    padding: 2rem 0 0;
-    border-left: 0;
-  }
-
-  .hero-instrument::after {
-    display: none;
   }
 
   .outcome-list {
@@ -247,14 +241,6 @@
 }
 
 @media (max-width: 420px) {
-  .wordmark-name {
-    display: none;
-  }
-
-  .header-resume {
-    padding: 0.7rem 0.8rem;
-  }
-
   .hero-copy h1 {
     font-size: 3.55rem;
     line-height: 0.88;

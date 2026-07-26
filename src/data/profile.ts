@@ -6,7 +6,7 @@ export const profile = {
   company: 'Cortex AI',
   location: 'Singapore',
   valueProp:
-    'I’m Rohan, a founding engineer at Cortex AI. Right now I work on motion-data capture: timebases, mobile capture, resumable uploads, and the tools operators use in the field.',
+    'I’m Rohan, a founding engineer at Cortex AI. I’ve built sub-second alerting for a hedge fund’s SRE team, telemetry pipelines for autonomous robots, and the capture infrastructure behind large-scale motion datasets — along with the dashboards, desktop apps, and mobile clients people use to run them.',
   email: 'bnahor.dev@gmail.com',
   links: {
     github: 'https://github.com/bnahor',
