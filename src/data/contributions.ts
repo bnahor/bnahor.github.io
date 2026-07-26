@@ -5,7 +5,7 @@
 // calendar, so the total and the monthly series always come from the same source
 // and agree with each other. The values below are the last snapshot; `asOf`
 // records when they were captured so the UI can label the data honestly.
-export const contributionsAsOf = '2026-07-20';
+export const contributionsAsOf = '2026-07-26';
 
 export type CommitMonth = {
   month: string;
@@ -14,18 +14,18 @@ export type CommitMonth = {
 };
 
 export const commitCadence: readonly CommitMonth[] = [
-  { month: 'Aug', year: 2025, commits: 11 },
-  { month: 'Sep', year: 2025, commits: 113 },
-  { month: 'Oct', year: 2025, commits: 19 },
-  { month: 'Nov', year: 2025, commits: 54 },
-  { month: 'Dec', year: 2025, commits: 2 },
-  { month: 'Jan', year: 2026, commits: 175 },
-  { month: 'Feb', year: 2026, commits: 199 },
-  { month: 'Mar', year: 2026, commits: 199 },
-  { month: 'Apr', year: 2026, commits: 149 },
-  { month: 'May', year: 2026, commits: 214 },
-  { month: 'Jun', year: 2026, commits: 140 },
-  { month: 'Jul', year: 2026, commits: 81 },
+  { month: 'Aug', year: 2025, commits: 12 },
+  { month: 'Sep', year: 2025, commits: 29 },
+  { month: 'Oct', year: 2025, commits: 13 },
+  { month: 'Nov', year: 2025, commits: 6 },
+  { month: 'Dec', year: 2025, commits: 3 },
+  { month: 'Jan', year: 2026, commits: 18 },
+  { month: 'Feb', year: 2026, commits: 28 },
+  { month: 'Mar', year: 2026, commits: 10 },
+  { month: 'Apr', year: 2026, commits: 2 },
+  { month: 'May', year: 2026, commits: 20 },
+  { month: 'Jun', year: 2026, commits: 4 },
+  { month: 'Jul', year: 2026, commits: 8 },
 ];
 
 export const contributionTotal = commitCadence.reduce((sum, item) => sum + item.commits, 0);
