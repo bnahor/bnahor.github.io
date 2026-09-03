@@ -1,0 +1,61 @@
+{
+  "id": "oste",
+  "title": "Operating Systems: Three Easy Pieces",
+  "kind": "book",
+  "status": "active",
+  "source": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+  "progress": 8,
+  "tags": [
+    "os",
+    "systems"
+  ],
+  "started": "2026-07-27",
+  "finished": "",
+  "updated": "2026-09-03",
+  "markerCount": 4,
+  "noteCount": 5,
+  "blurb": "Working through it a chapter at a time, notes while reading. The PDF lives in",
+  "durationSeconds": 0,
+  "blocks": [
+    {
+      "kind": "note",
+      "lines": [
+        "Working through it a chapter at a time, notes while reading. The PDF lives in",
+        "`resources/prep/computer-systems/`."
+      ]
+    },
+    {
+      "kind": "page",
+      "page": 7,
+      "lines": [
+        "the three pieces: virtualization (CPU + memory), concurrency,",
+        "persistence (I/O + filesystems). Each piece has its own mini-arc."
+      ]
+    },
+    {
+      "kind": "page",
+      "page": 14,
+      "lines": [
+        "the dialogue chapters are skippable but the questions are the actual",
+        "exam-style prompts."
+      ]
+    },
+    {
+      "kind": "page",
+      "page": 28,
+      "lines": [
+        "limited direct execution: the OS has no control while a process runs",
+        "on the CPU — control only returns via timer interrupt or syscall. Everything",
+        "in scheduling follows from this asymmetry."
+      ]
+    },
+    {
+      "kind": "page",
+      "page": 58,
+      "lines": [
+        "MLFQ reframe I liked: it's priority learned from observed behaviour,",
+        "not declared. Fresh processes are assumed interactive until proven otherwise."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": "2026-09-03-refactoring-ui",
+  "title": "Refactoring UI",
+  "kind": "book",
+  "status": "done",
+  "source": "https://www.refactoringui.com/",
+  "progress": 100,
+  "tags": [
+    "design",
+    "frontend"
+  ],
+  "started": "2026-05-18",
+  "finished": "2026-06-02",
+  "updated": "2026-09-03",
+  "markerCount": 4,
+  "noteCount": 6,
+  "blurb": "Read over two weeks while rebuilding this site's earlier drafts.",
+  "durationSeconds": 0,
+  "blocks": [
+    {
+      "kind": "note",
+      "lines": [
+        "Read over two weeks while rebuilding this site's earlier drafts."
+      ]
+    },
+    {
+      "kind": "page",
+      "page": 12,
+      "lines": [
+        "hierarchy is a budget: not everything can be important, so decide",
+        "what is and spend visual weight there. Most bad interfaces are just",
+        "everything shouting at once."
+      ]
+    },
+    {
+      "kind": "page",
+      "page": 30,
+      "lines": [
+        "start with too much whitespace, then take it away. Dense screens are",
+        "easier to tighten than airy ones are to fix."
+      ]
+    },
+    {
+      "kind": "page",
+      "page": 64,
+      "lines": [
+        "don't scale everything linearly with font size — padding, borders and",
+        "icon weights need their own curves or the proportions collapse at small sizes."
+      ]
+    },
+    {
+      "kind": "page",
+      "page": 122,
+      "lines": [
+        "depth is a cue, use it once: pick shadows or borders or overlap,",
+        "not all three stacked."
+      ]
+    },
+    {
+      "kind": "note",
+      "lines": [
+        "Good pocket reference; the site's current restraint is mostly this book's",
+        "fault."
+      ]
+    }
+  ]
+}

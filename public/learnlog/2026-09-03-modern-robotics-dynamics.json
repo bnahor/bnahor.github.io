@@ -1,0 +1,78 @@
+{
+  "id": "2026-09-03-modern-robotics-dynamics",
+  "title": "Modern Robotics, Ch. 8.1 — Lagrangian Formulation of Dynamics",
+  "kind": "lecture",
+  "status": "active",
+  "source": "https://www.youtube.com/watch?v=1U6y_68CjeY",
+  "progress": 84,
+  "tags": [
+    "robotics",
+    "dynamics"
+  ],
+  "started": "2026-08-30",
+  "finished": "",
+  "updated": "2026-09-03",
+  "markerCount": 5,
+  "noteCount": 7,
+  "blurb": "Lynch's lightboard series over the book I already have as a PDF. Dynamics",
+  "durationSeconds": 402,
+  "blocks": [
+    {
+      "kind": "note",
+      "lines": [
+        "Lynch's lightboard series over the book I already have as a PDF. Dynamics",
+        "chapter, first pass — the energy view instead of force balances."
+      ]
+    },
+    {
+      "kind": "marker",
+      "seconds": 41,
+      "lines": [
+        "two equivalent routes to dynamics: Newton–Euler (forces and frames,",
+        "painful bookkeeping) vs Lagrangian (kinetic + potential energy in generalized",
+        "coordinates). Same equations, different suffering."
+      ]
+    },
+    {
+      "kind": "marker",
+      "seconds": 95,
+      "lines": [
+        "choose generalized coordinates q; kinetic energy is quadratic in",
+        "q̇, so it factors into a mass matrix M(q) — configuration-dependent inertia."
+      ]
+    },
+    {
+      "kind": "marker",
+      "seconds": 178,
+      "lines": [
+        "Euler–Lagrange with generalized forces: the ∂KE/∂q terms are where",
+        "Coriolis and centrifugal effects come from. They fall out of the derivative,",
+        "not from intuition."
+      ]
+    },
+    {
+      "kind": "marker",
+      "seconds": 252,
+      "lines": [
+        "because M depends on q, the same joint torque accelerates the arm",
+        "differently depending on pose. This is why controller gains tuned at one",
+        "configuration misbehave at another."
+      ]
+    },
+    {
+      "kind": "marker",
+      "seconds": 336,
+      "lines": [
+        "gravity enters through the potential energy only — V(q), take",
+        "partials, done. Gravity is the one term you get for free."
+      ]
+    },
+    {
+      "kind": "note",
+      "lines": [
+        "Next: finish part 2, then the mass-matrix examples against the book's",
+        "chapter 8.3."
+      ]
+    }
+  ]
+}

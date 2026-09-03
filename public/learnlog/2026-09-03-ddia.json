@@ -1,0 +1,29 @@
+{
+  "id": "2026-09-03-ddia",
+  "title": "Designing Data-Intensive Applications",
+  "kind": "book",
+  "status": "queued",
+  "source": "https://dataintensive.net/",
+  "progress": 0,
+  "tags": [
+    "systems",
+    "data"
+  ],
+  "started": "",
+  "finished": "",
+  "updated": "2026-09-03",
+  "markerCount": 0,
+  "noteCount": 1,
+  "blurb": "Second edition. I've read the first edition's storage and replication",
+  "durationSeconds": 0,
+  "blocks": [
+    {
+      "kind": "note",
+      "lines": [
+        "Second edition. I've read the first edition's storage and replication",
+        "chapters properly; this time end to end, including the partitioning and",
+        "consensus material I always skipped."
+      ]
+    }
+  ]
+}

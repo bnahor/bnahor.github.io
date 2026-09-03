@@ -1,0 +1,95 @@
+{
+  "generatedAt": "2026-09-03T16:20:24.589Z",
+  "entries": [
+    {
+      "id": "2026-09-03-modern-robotics-dynamics",
+      "title": "Modern Robotics, Ch. 8.1 — Lagrangian Formulation of Dynamics",
+      "kind": "lecture",
+      "status": "active",
+      "source": "https://www.youtube.com/watch?v=1U6y_68CjeY",
+      "progress": 84,
+      "tags": [
+        "robotics",
+        "dynamics"
+      ],
+      "started": "2026-08-30",
+      "finished": "",
+      "updated": "2026-09-03",
+      "markerCount": 5,
+      "noteCount": 7,
+      "blurb": "Lynch's lightboard series over the book I already have as a PDF. Dynamics"
+    },
+    {
+      "id": "oste",
+      "title": "Operating Systems: Three Easy Pieces",
+      "kind": "book",
+      "status": "active",
+      "source": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+      "progress": 8,
+      "tags": [
+        "os",
+        "systems"
+      ],
+      "started": "2026-07-27",
+      "finished": "",
+      "updated": "2026-09-03",
+      "markerCount": 4,
+      "noteCount": 5,
+      "blurb": "Working through it a chapter at a time, notes while reading. The PDF lives in"
+    },
+    {
+      "id": "2026-09-03-ddia",
+      "title": "Designing Data-Intensive Applications",
+      "kind": "book",
+      "status": "queued",
+      "source": "https://dataintensive.net/",
+      "progress": 0,
+      "tags": [
+        "systems",
+        "data"
+      ],
+      "started": "",
+      "finished": "",
+      "updated": "2026-09-03",
+      "markerCount": 0,
+      "noteCount": 1,
+      "blurb": "Second edition. I've read the first edition's storage and replication"
+    },
+    {
+      "id": "2026-09-03-motion-planning-overview",
+      "title": "Modern Robotics, Ch. 10.1 — Overview of Motion Planning",
+      "kind": "lecture",
+      "status": "queued",
+      "source": "https://www.youtube.com/watch?v=aC4LQuB4Cic",
+      "progress": 0,
+      "tags": [
+        "robotics",
+        "planning"
+      ],
+      "started": "",
+      "finished": "",
+      "updated": "2026-09-03",
+      "markerCount": 0,
+      "noteCount": 1,
+      "blurb": "Queued next in the series — the planning chapter, which is the half I"
+    },
+    {
+      "id": "2026-09-03-refactoring-ui",
+      "title": "Refactoring UI",
+      "kind": "book",
+      "status": "done",
+      "source": "https://www.refactoringui.com/",
+      "progress": 100,
+      "tags": [
+        "design",
+        "frontend"
+      ],
+      "started": "2026-05-18",
+      "finished": "2026-06-02",
+      "updated": "2026-09-03",
+      "markerCount": 4,
+      "noteCount": 6,
+      "blurb": "Read over two weeks while rebuilding this site's earlier drafts."
+    }
+  ]
+}
