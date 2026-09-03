@@ -16,8 +16,18 @@ export interface ManifestEntry {
   title: string;
   kind: EntryKind;
   status: EntryStatus;
-  /** URL of the video/page/PDF the notes are anchored to. */
+  /** URL of the video/page the notes are anchored to — the "Source" link. */
   source: string;
+  /**
+   * Direct URL of the PDF, when `source` is a landing page. Page markers link
+   * here (`…#page=42`), because `#page=` only means anything to a PDF viewer.
+   * Falls back to `source` when empty.
+   */
+  sourcePdf: string;
+  /** id of the library item this note covers, when the file is held locally. */
+  library: string;
+  /** Library-relative path of that file — only resolvable in local mode. */
+  libraryPath: string;
   /** 0–100. Explicit frontmatter value, or derived from the last marker. */
   progress: number;
   tags: string[];
@@ -52,4 +62,49 @@ export type LearnBlock =
 export interface LearnEntry extends ManifestEntry {
   durationSeconds: number;
   blocks: LearnBlock[];
+}
+
+/* ------------------------------------------------------------- library -- */
+
+/**
+ * One file in the local resources library. Compiled by
+ * scripts/ingest-library.ts from the directory tree — metadata only. The
+ * files themselves are never copied into the repo or the deploy: most of the
+ * library is commercially published material, and the site is public.
+ */
+export interface LibraryItem {
+  id: string;
+  title: string;
+  /** Top-level shelf: coursework, prep, reference-library, projects… */
+  area: string;
+  /** Directory path under the area, e.g. "algorithms / textbooks". */
+  subject: string;
+  kind: EntryKind;
+  /** Path relative to the library root — resolved to /library/<path> in local
+   *  mode, and otherwise never used. Never an absolute path: the compiled
+   *  JSON is public. */
+  path: string;
+  bytes: number;
+  /** 0 when unknown (non-PDF, or not indexed). */
+  pages: number;
+  /** Where to get it legitimately, when such a URL exists. */
+  link: string;
+  /** `free` — the full text is published at `link`. `home` — publisher or
+   *  author page, i.e. where you would buy it. */
+  linkKind: '' | 'free' | 'home';
+  /**
+   * Direct URL of the published PDF, when the publisher offers one. Distinct
+   * from `link`, which is usually a landing page: only a real PDF can honour
+   * the `#page=N` fragment a page marker depends on.
+   */
+  pdf: string;
+  /** id of the shelf note covering this item, when one exists. */
+  noteId: string;
+}
+
+export interface LibraryManifest {
+  generatedAt: string;
+  /** Directory count and total bytes, for the header. */
+  totalBytes: number;
+  items: LibraryItem[];
 }

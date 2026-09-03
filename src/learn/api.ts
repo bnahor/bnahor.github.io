@@ -4,7 +4,7 @@
  * only when a row is expanded. Rejections are cached so a missing file
  * doesn't trigger request loops.
  */
-import type { LearnEntry, LearnManifest } from './types';
+import type { LearnEntry, LearnManifest, LibraryManifest } from './types';
 
 const cache = new Map<string, Promise<unknown>>();
 
@@ -26,4 +26,8 @@ export function fetchManifest(): Promise<LearnManifest> {
 
 export function fetchEntry(id: string): Promise<LearnEntry> {
   return fetchJson<LearnEntry>(`${id}.json`);
+}
+
+export function fetchLibrary(): Promise<LibraryManifest> {
+  return fetchJson<LibraryManifest>('library.json');
 }

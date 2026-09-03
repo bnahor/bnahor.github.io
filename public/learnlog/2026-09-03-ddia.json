@@ -4,6 +4,9 @@
   "kind": "book",
   "status": "queued",
   "source": "https://dataintensive.net/",
+  "sourcePdf": "",
+  "library": "prep-computer-systems-designing-data-intensive-applications-2nd-edition",
+  "libraryPath": "prep/computer-systems/Designing Data-Intensive Applications (2nd Edition).pdf",
   "progress": 0,
   "tags": [
     "systems",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-03T16:20:24.589Z",
+  "generatedAt": "2026-09-03T16:53:15.590Z",
   "entries": [
     {
       "id": "2026-09-03-modern-robotics-dynamics",
@@ -7,6 +7,9 @@
       "kind": "lecture",
       "status": "active",
       "source": "https://www.youtube.com/watch?v=1U6y_68CjeY",
+      "sourcePdf": "https://hades.mech.northwestern.edu/images/7/7f/MR.pdf",
+      "library": "prep-robotics-modern-robotics",
+      "libraryPath": "prep/robotics/modern_robotics.pdf",
       "progress": 84,
       "tags": [
         "robotics",
@@ -25,6 +28,9 @@
       "kind": "book",
       "status": "active",
       "source": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+      "sourcePdf": "",
+      "library": "prep-computer-systems-operating-systems-three-easy-pieces-v1-10",
+      "libraryPath": "prep/computer-systems/Operating Systems - Three Easy Pieces (v1.10).pdf",
       "progress": 8,
       "tags": [
         "os",
@@ -43,6 +49,9 @@
       "kind": "book",
       "status": "queued",
       "source": "https://dataintensive.net/",
+      "sourcePdf": "",
+      "library": "prep-computer-systems-designing-data-intensive-applications-2nd-edition",
+      "libraryPath": "prep/computer-systems/Designing Data-Intensive Applications (2nd Edition).pdf",
       "progress": 0,
       "tags": [
         "systems",
@@ -61,6 +70,9 @@
       "kind": "lecture",
       "status": "queued",
       "source": "https://www.youtube.com/watch?v=aC4LQuB4Cic",
+      "sourcePdf": "",
+      "library": "",
+      "libraryPath": "",
       "progress": 0,
       "tags": [
         "robotics",
@@ -79,6 +91,9 @@
       "kind": "book",
       "status": "done",
       "source": "https://www.refactoringui.com/",
+      "sourcePdf": "",
+      "library": "reference-library-frontend-refactoring-ui",
+      "libraryPath": "reference-library/frontend/refactoring_ui.pdf",
       "progress": 100,
       "tags": [
         "design",

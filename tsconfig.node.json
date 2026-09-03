@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    // These files run natively under bun or node >= 22.6, never through a
+    // downlevel emit, so the target matches the runtime rather than the
+    // browser target in tsconfig.json.
+    "target": "ES2022",
+    "lib": ["ES2022"],
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",

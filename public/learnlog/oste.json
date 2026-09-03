@@ -4,6 +4,9 @@
   "kind": "book",
   "status": "active",
   "source": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+  "sourcePdf": "",
+  "library": "prep-computer-systems-operating-systems-three-easy-pieces-v1-10",
+  "libraryPath": "prep/computer-systems/Operating Systems - Three Easy Pieces (v1.10).pdf",
   "progress": 8,
   "tags": [
     "os",

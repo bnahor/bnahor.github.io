@@ -24,6 +24,8 @@ import type {
   LearnBlock,
   LearnEntry,
   LearnManifest,
+  LibraryItem,
+  LibraryManifest,
   ManifestEntry,
 } from '../src/learn/types';
 
@@ -34,6 +36,13 @@ const SOURCE_DIR = path.join(VAULT, 'Learning Log');
 const OUT_DIR = path.join(ROOT, 'public', 'learnlog');
 
 const KINDS = new Set(['lecture', 'book', 'paper', 'course', 'video', 'article']);
+/**
+ * Files in OUT_DIR that are not compiled notes. The orphan sweep below deletes
+ * everything it doesn't recognise, so anything else written to this directory
+ * — library.json in particular — has to be named here or it gets removed on
+ * the next ingest.
+ */
+const RESERVED = new Set(['index.json', 'library.json']);
 const STATUSES = new Set(['queued', 'active', 'done', 'shelved']);
 
 type Scalar = string | number | boolean;
@@ -221,7 +230,7 @@ function dateOnly(value: Scalar | Scalar[] | undefined): string {
   return value.slice(0, 10);
 }
 
-function compileEntry(file: string, id: string): LearnEntry | null {
+function compileEntry(file: string, id: string, library: Map<string, LibraryItem>): LearnEntry | null {
   const raw = fs.readFileSync(file, 'utf8');
   const { data, body } = parseFrontmatter(raw);
 
@@ -231,9 +240,15 @@ function compileEntry(file: string, id: string): LearnEntry | null {
   const kindRaw = str(data, 'type').toLowerCase();
   const statusRaw = str(data, 'status').toLowerCase();
 
+  // A `library:` id ties the note to a file on the shelf. Everything the
+  // library already knows — page count, the publisher's PDF, where the file
+  // lives — is inherited, so a book note needs no bookkeeping beyond the id.
+  const libraryId = str(data, 'library');
+  const item = libraryId ? library.get(libraryId) : undefined;
+
   const { blocks, lastSeconds, lastPage } = parseBlocks(body);
   const durationSeconds = parseDuration(data.duration);
-  const pages = typeof data.pages === 'number' ? data.pages : 0;
+  const pages = typeof data.pages === 'number' ? data.pages : (item?.pages ?? 0);
   const explicit = typeof data.progress === 'number' ? data.progress : NaN;
   const status: EntryStatus = STATUSES.has(statusRaw) ? (statusRaw as EntryStatus) : 'queued';
 
@@ -265,7 +280,13 @@ function compileEntry(file: string, id: string): LearnEntry | null {
     title,
     kind: (KINDS.has(kindRaw) ? kindRaw : 'article') as EntryKind,
     status,
-    source: str(data, 'source'),
+    source: str(data, 'source') || item?.link || '',
+    // Only a direct PDF can honour `#page=N`. An explicit `sourcePdf:` wins;
+    // otherwise a linked library item supplies one, but only its `pdf` — its
+    // `link` is usually a landing page, where the fragment would do nothing.
+    sourcePdf: str(data, 'sourcePdf') || item?.pdf || '',
+    library: item?.id ?? '',
+    libraryPath: item?.path ?? '',
     progress,
     tags: listOf(data, 'tags'),
     started: dateOnly(data.started),
@@ -299,6 +320,40 @@ function writeIfChanged(file: string, content: string): boolean {
   return true;
 }
 
+/**
+ * The library manifest, compiled just before this script by
+ * scripts/ingest-library.ts. Absent on a machine without the library — notes
+ * then simply carry whatever their own frontmatter states.
+ */
+function loadLibrary(): Map<string, LibraryItem> {
+  const file = path.join(OUT_DIR, 'library.json');
+  const items = new Map<string, LibraryItem>();
+  if (!fs.existsSync(file)) return items;
+
+  try {
+    const manifest = JSON.parse(fs.readFileSync(file, 'utf8')) as LibraryManifest;
+    for (const item of manifest.items ?? []) items.set(item.id, item);
+  } catch (err) {
+    console.warn(`[learnlog] unreadable library.json: ${err instanceof Error ? err.message : err}`);
+  }
+
+  return items;
+}
+
+/** Previous `generatedAt` when the entry rows are unchanged, else now. */
+function stableTimestamp(rows: ManifestEntry[]): string {
+  try {
+    const file = path.join(OUT_DIR, 'index.json');
+    const prev = JSON.parse(fs.readFileSync(file, 'utf8')) as LearnManifest;
+    if (JSON.stringify(prev.entries) === JSON.stringify(rows) && prev.generatedAt) {
+      return prev.generatedAt;
+    }
+  } catch {
+    // No previous manifest, or an unreadable one: this run is the new truth.
+  }
+  return new Date().toISOString();
+}
+
 function ingest(): void {
   if (!fs.existsSync(SOURCE_DIR)) {
     console.log(`[learnlog] no vault at ${SOURCE_DIR} — leaving public/learnlog as-is`);
@@ -313,6 +368,7 @@ function ingest(): void {
     .map((f) => path.join(SOURCE_DIR, f as string))
     .filter((f) => fs.statSync(f).isFile());
 
+  const library = loadLibrary();
   const seen = new Set<string>();
   const entries: LearnEntry[] = [];
 
@@ -323,7 +379,7 @@ function ingest(): void {
     seen.add(id);
 
     try {
-      const entry = compileEntry(file, id);
+      const entry = compileEntry(file, id, library);
       if (entry) entries.push(entry);
     } catch (err) {
       console.warn(`[learnlog] skipping ${file}: ${err instanceof Error ? err.message : err}`);
@@ -347,15 +403,18 @@ function ingest(): void {
 
   // Remove orphans from deleted/renamed notes.
   for (const f of fs.readdirSync(OUT_DIR)) {
-    if (f.endsWith('.json') && f !== 'index.json' && !emitted.has(f)) {
+    if (f.endsWith('.json') && !RESERVED.has(f) && !emitted.has(f)) {
       fs.unlinkSync(path.join(OUT_DIR, f));
       changed++;
     }
   }
 
+  const rows = entries.map(toManifestRow);
   const manifest: LearnManifest = {
-    generatedAt: new Date().toISOString(),
-    entries: entries.map(toManifestRow),
+    // Same reasoning as the library: a timestamp that moves on every run
+    // makes the manifest look changed when no note did.
+    generatedAt: stableTimestamp(rows),
+    entries: rows,
   };
   const manifestChanged = writeIfChanged(
     path.join(OUT_DIR, 'index.json'),

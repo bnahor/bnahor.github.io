@@ -4,6 +4,9 @@
   "kind": "lecture",
   "status": "queued",
   "source": "https://www.youtube.com/watch?v=aC4LQuB4Cic",
+  "sourcePdf": "",
+  "library": "",
+  "libraryPath": "",
   "progress": 0,
   "tags": [
     "robotics",

@@ -10,52 +10,65 @@ import { LearnTile } from './components/tiles/LearnTile';
 import { ProjectsTile } from './components/tiles/ProjectsTile';
 import { profile } from './data/profile';
 
-// The shelf is a separate route (#!/shelf) and its own chunk — it only
-// downloads when visited.
+// Both learning routes are their own chunks — neither downloads until
+// visited, and the library catalogue in particular is a large payload.
 const ShelfView = lazy(() => import('./learn/ShelfView'));
+const LibraryView = lazy(() => import('./learn/LibraryView'));
 
-/** Hash-based routing: #/shelf serves the learning log, everything else is
- *  a same-page anchor on the portfolio (so #experience etc. keep working). */
-function useShelfRoute() {
-  const [onShelf, setOnShelf] = useState(() => window.location.hash.startsWith('#/shelf'));
+type Route = 'home' | 'shelf' | 'library';
+
+function readRoute(): Route {
+  const hash = window.location.hash;
+  if (hash.startsWith('#/shelf')) return 'shelf';
+  if (hash.startsWith('#/library')) return 'library';
+  return 'home';
+}
+
+/** Hash-based routing: #/shelf and #/library are pages, everything else is a
+ *  same-page anchor on the portfolio (so #experience etc. keep working). */
+function useRoute(): Route {
+  const [route, setRoute] = useState(readRoute);
 
   useEffect(() => {
-    const onChange = () => setOnShelf(window.location.hash.startsWith('#/shelf'));
+    const onChange = () => setRoute(readRoute());
     window.addEventListener('hashchange', onChange);
     return () => window.removeEventListener('hashchange', onChange);
   }, []);
 
-  return onShelf;
+  return route;
 }
 
 export default function App() {
-  const onShelf = useShelfRoute();
-  const wasOnShelf = useRef(onShelf);
+  const route = useRoute();
+  const onPage = route !== 'home';
+  const wasOnPage = useRef(onPage);
 
-  // Returning from the shelf to a section anchor: the homepage mounts fresh,
-  // so the browser' default hash scroll has nothing to land on. Do it manually.
+  // Returning from a page to a section anchor: the homepage mounts fresh, so
+  // the browser's default hash scroll has nothing to land on. Do it manually.
   useEffect(() => {
-    if (wasOnShelf.current && !onShelf) {
+    if (wasOnPage.current && !onPage) {
       const id = window.location.hash.slice(1);
       if (id) document.getElementById(id)?.scrollIntoView();
     }
-    wasOnShelf.current = onShelf;
-  }, [onShelf]);
+    wasOnPage.current = onPage;
+  }, [onPage]);
 
   return (
     <LazyMotion features={domAnimation} strict>
       <MotionConfig reducedMotion="user">
-        {onShelf ? (
+        {onPage ? (
           <Suspense
             fallback={
               <div className="site-shell">
                 <main className="site-main shelf-main">
-                  <p className="shelf-fallback">Opening the shelf…</p>
+                  <p className="shelf-fallback">
+                    Opening the {route === 'library' ? 'library' : 'shelf'}…
+                  </p>
                 </main>
               </div>
             }
           >
-            <ShelfView />
+            {route === 'library' ? <LibraryView /> : <ShelfView />}
           </Suspense>
         ) : (
           <div className="site-shell">

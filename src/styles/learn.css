@@ -48,14 +48,19 @@
 }
 
 .learn-rail-link {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
   margin-top: 1.75rem;
+  width: fit-content;
   color: var(--ghost);
   font: 500 0.74rem/1 var(--mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.learn-rail-link + .learn-rail-link {
+  margin-top: 0.75rem;
 }
 
 .learn-rail-link:hover {

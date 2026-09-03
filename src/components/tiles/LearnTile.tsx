@@ -51,6 +51,10 @@ export function LearnTile() {
           Open the shelf
           <Icon name="arrowRight" size={14} />
         </a>
+        <a className="learn-rail-link" href="#/library">
+          Browse the library
+          <Icon name="arrowRight" size={14} />
+        </a>
       </div>
 
       <div className="learn-rail-list">

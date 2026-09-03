@@ -3,7 +3,7 @@ import { m } from 'framer-motion';
 import { SiteHeader } from '../components/SiteHeader';
 import { Icon } from '../components/Icon';
 import { fetchEntry, fetchManifest } from './api';
-import { buildSeekUrl, formatSeconds } from './seekUrl';
+import { LOCAL_LIBRARY, buildSeekUrl, formatSeconds, libraryHref, pageHref } from './seekUrl';
 import { NoteLines } from './markdown';
 import type { LearnEntry, ManifestEntry } from './types';
 
@@ -32,6 +32,17 @@ function EntryBody({ entry }: { entry: LearnEntry }) {
         {entry.source && (
           <a className="shelf-source" href={entry.source} target="_blank" rel="noreferrer">
             Source
+            <Icon name="arrowRight" size={12} />
+          </a>
+        )}
+        {LOCAL_LIBRARY && entry.libraryPath && (
+          <a
+            className="shelf-source"
+            href={libraryHref(entry.libraryPath)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Local copy
             <Icon name="arrowRight" size={12} />
           </a>
         )}
@@ -64,10 +75,12 @@ function EntryBody({ entry }: { entry: LearnEntry }) {
           }
 
           if (block.kind === 'page') {
-            const href = buildSeekUrl(entry.source, { page: block.page });
+            // Prefers the local file, then the publisher's PDF; a landing
+            // page gets no `#page=` fragment, because it would not honour it.
+            const href = pageHref(entry, block.page);
             return (
               <div key={i} className="marker">
-                {href !== '#' ? (
+                {href ? (
                   <a className="marker-time" href={href} target="_blank" rel="noreferrer">
                     p.&thinsp;{block.page}
                   </a>

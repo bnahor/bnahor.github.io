@@ -8,13 +8,17 @@
  * Flags: --type (lecture|book|paper|course|video|article)
  *        --source URL       --status (queued|active|done|shelved)
  *        --tags a,b         --open (open in Obsidian after creating)
+ *        --library ID       link to a library item: the note then inherits
+ *                           its page count and publisher PDF, and the
+ *                           library row stops offering "start notes".
+ *
+ * The Library page hands you this command, pre-filled, for any row.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const VAULT = (process.env.LEARNLOG_VAULT ?? path.join(process.env.HOME ?? '', 'Documents', 'Obsidian Vault'));
 const SOURCE_DIR = path.join(VAULT, 'Learning Log');
 
@@ -49,7 +53,9 @@ for (let i = 0; i < args.length; i++) {
 
 const title = positional.join(' ').trim();
 if (!title) {
-  fail('usage: npm run new "Note title" -- [--type lecture] [--source URL] [--status active] [--tags a,b] [--open]');
+  fail(
+    'usage: npm run new "Note title" -- [--type lecture] [--source URL] [--status active] [--tags a,b] [--library ID] [--open]',
+  );
 }
 
 const kind = KINDS.has(flags.type) ? flags.type : 'article';
@@ -81,6 +87,7 @@ const body = [
   `type: ${kind}`,
   `source: ${flags.source ?? ''}`,
   `status: ${status}`,
+  ...(flags.library ? [`library: ${flags.library}`] : []),
   ...(status === 'queued' ? [] : [`started: ${today}`]),
   'tags: ' + yamlTags,
   '---',

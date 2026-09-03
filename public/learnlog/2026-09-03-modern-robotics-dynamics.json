@@ -4,6 +4,9 @@
   "kind": "lecture",
   "status": "active",
   "source": "https://www.youtube.com/watch?v=1U6y_68CjeY",
+  "sourcePdf": "https://hades.mech.northwestern.edu/images/7/7f/MR.pdf",
+  "library": "prep-robotics-modern-robotics",
+  "libraryPath": "prep/robotics/modern_robotics.pdf",
   "progress": 84,
   "tags": [
     "robotics",

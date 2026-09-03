@@ -4,6 +4,9 @@
   "kind": "book",
   "status": "done",
   "source": "https://www.refactoringui.com/",
+  "sourcePdf": "",
+  "library": "reference-library-frontend-refactoring-ui",
+  "libraryPath": "reference-library/frontend/refactoring_ui.pdf",
   "progress": 100,
   "tags": [
     "design",

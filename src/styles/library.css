@@ -1,0 +1,165 @@
+/* ------------------------------------------------------------------ *
+ * The library catalogue (#/library). Reuses the shelf's page furniture —
+ * heading, chips, search — and adds grouped rows. Same two-colour system:
+ * hierarchy from weight, scale and 1px lines, never hue.
+ * ------------------------------------------------------------------ */
+
+.lib-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  margin-top: 2.5rem;
+}
+
+.lib-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line-hot);
+  color: var(--ghost);
+  font: 500 0.72rem/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.lib-group-sub {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--faint);
+  letter-spacing: 0.1em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lib-group-count {
+  flex-shrink: 0;
+  color: var(--faint);
+}
+
+.lib-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.lib-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 5rem auto;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 0.25rem;
+  border-bottom: 1px solid var(--line);
+  transition: background-color 180ms ease;
+}
+
+.lib-row:hover {
+  background: var(--ghost-dim);
+}
+
+.lib-row-main {
+  min-width: 0;
+}
+
+.lib-title {
+  overflow: hidden;
+  font-size: 0.98rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lib-sub {
+  display: flex;
+  gap: 0.85rem;
+  margin-top: 0.3rem;
+  overflow: hidden;
+  color: var(--faint);
+  font: 400 0.68rem/1.4 var(--mono);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.lib-kind {
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.lib-size {
+  color: var(--soft);
+  font: 400 0.72rem/1 var(--mono);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.lib-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lib-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--soft);
+  font: 500 0.66rem/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+button.lib-action:hover,
+a.lib-action:hover {
+  border-color: var(--line-hot);
+  color: var(--ghost);
+}
+
+/* Already has a note — a state, not an action. */
+.lib-action--on {
+  border-color: var(--line-hot);
+  color: var(--ghost);
+}
+
+/* Held locally, published nowhere linkable. Reads as a fact, not a button. */
+.lib-action--none {
+  border-color: transparent;
+  color: var(--faint);
+}
+
+@media (max-width: 1080px) {
+  .lib-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem 1rem;
+  }
+
+  .lib-size {
+    text-align: left;
+  }
+
+  .lib-actions {
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 760px) {
+  .lib-groups {
+    gap: 2.25rem;
+  }
+
+  .lib-group-sub {
+    display: none;
+  }
+
+  .lib-row {
+    padding: 0.9rem 0;
+  }
+}
