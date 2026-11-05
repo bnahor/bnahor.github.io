@@ -118,6 +118,21 @@
     display: none;
   }
 
+  .hero-status {
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+  }
+
+  .hero-previously {
+    flex-basis: 100%;
+    padding-left: calc(6px + 0.65rem);
+  }
+
+  .scope {
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    height: 8rem;
+  }
+
   .hero-copy h1 {
     font-size: clamp(3.7rem, 19vw, 5.8rem);
     line-height: 0.86;

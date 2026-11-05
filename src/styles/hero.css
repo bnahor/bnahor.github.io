@@ -173,3 +173,91 @@
   line-height: 1.75;
 }
 
+
+.hero-previously {
+  color: var(--faint);
+}
+
+/* Headline lines rise out of a clip. The descender padding keeps the italic
+   serif line from being cropped at rest. */
+.mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+
+.mask-line-inner {
+  display: block;
+  will-change: transform;
+}
+
+/* ------------------------------------------------------ signal scope --- */
+
+.scope {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  /* Fixed row: the canvas's backing store must never size its own box, or
+     every resize would feed back into a taller canvas. */
+  grid-template-rows: minmax(0, 1fr);
+  height: clamp(8.5rem, 13vw, 11rem);
+  margin: clamp(3rem, 5vw, 4.5rem) 0 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.scope-labels {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  border-right: 1px solid var(--line);
+  color: var(--faint);
+  font: 500 0.62rem/1 var(--mono);
+  letter-spacing: 0.12em;
+}
+
+.scope-labels span {
+  display: flex;
+  align-items: center;
+  padding-left: 0.1rem;
+}
+
+.scope-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.scope-readout {
+  position: absolute;
+  top: -0.6rem;
+  right: 0;
+  display: flex;
+  gap: 0.75rem;
+  padding-left: 0.75rem;
+  background: var(--black);
+  color: var(--faint);
+  font: 500 0.62rem/1.2 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.scope-skew {
+  min-width: 7ch;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.scope-state {
+  min-width: 8ch;
+  color: var(--faint);
+  transition: color 240ms ease;
+}
+
+.scope-state[data-locked='true'] {
+  color: var(--ghost);
+}
+
+.scope-state[data-locked='true']::before {
+  content: '● ';
+}

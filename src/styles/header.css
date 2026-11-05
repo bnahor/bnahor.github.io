@@ -194,3 +194,15 @@
   letter-spacing: 0.02em;
 }
 
+
+.scroll-progress {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--ghost);
+  box-shadow: 0 0 8px rgba(248, 248, 255, 0.6);
+  transform-origin: left;
+  pointer-events: none;
+}

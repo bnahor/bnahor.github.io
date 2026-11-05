@@ -6,11 +6,11 @@ import { fetchEntry, fetchManifest } from './api';
 import { LOCAL_LIBRARY, buildSeekUrl, formatSeconds, libraryHref, pageHref } from './seekUrl';
 import { NoteLines } from './markdown';
 import type { LearnEntry, ManifestEntry } from './types';
+import { SITE_TITLE } from '../data/profile';
 
 const STATUS_FILTERS = ['all', 'active', 'queued', 'done', 'shelved'] as const;
 type StatusFilter = (typeof STATUS_FILTERS)[number];
 
-const PAGE_TITLE = 'Rohan Bahl — Founding Engineer at Cortex AI';
 
 function relDays(iso: string): string {
   const then = Date.parse(`${iso}T00:00:00Z`);
@@ -175,7 +175,7 @@ export default function ShelfView() {
       .catch(() => alive && setFailed(true));
     return () => {
       alive = false;
-      document.title = PAGE_TITLE;
+      document.title = SITE_TITLE;
     };
   }, []);
 

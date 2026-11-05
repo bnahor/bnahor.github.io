@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { m, useScroll, useSpring } from 'framer-motion';
 import { Icon } from './Icon';
 import { profile } from '../data/profile';
 
 const navItems = [
   { label: 'Experience', href: '#experience' },
   { label: 'Projects', href: '#projects' },
+  { label: 'Blog', href: '#/blog' },
   { label: 'Shelf', href: '#/shelf' },
   { label: 'Library', href: '#/library' },
   { label: 'About', href: '#about' },
@@ -15,6 +17,8 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 40, mass: 0.3 });
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false);
@@ -89,6 +93,8 @@ export function SiteHeader() {
           Résumé
           <Icon name="arrowRight" size={14} />
         </a>
+
+        <m.span className="scroll-progress" aria-hidden="true" style={{ scaleX: progress }} />
 
         <button
           ref={toggleRef}

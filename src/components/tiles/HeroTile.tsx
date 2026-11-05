@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import { m } from 'framer-motion';
 import { Icon } from '../Icon';
+import { EASE_OUT } from '../motion/ease';
+import { SignalScope } from '../motion/SignalScope';
 import { profile } from '../../data/profile';
 
 function singaporeTime(date: Date) {
@@ -11,28 +14,54 @@ function singaporeTime(date: Date) {
   }).format(date);
 }
 
+/** One headline line rising out of a clipping mask. */
+function MaskLine({ children, delay }: { children: ReactNode; delay: number }) {
+  return (
+    <span className="mask-line">
+      <m.span
+        className="mask-line-inner"
+        initial={{ y: '105%' }}
+        animate={{ y: '0%' }}
+        transition={{ duration: 1, ease: EASE_OUT, delay }}
+      >
+        {children}
+      </m.span>
+    </span>
+  );
+}
+
+const rise = (delay: number) => ({
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.8, ease: EASE_OUT, delay },
+});
+
 export function HeroTile() {
   const [localTime] = useState(() => singaporeTime(new Date()));
 
   return (
     <section id="top" className="hero-tile" aria-labelledby="hero-heading">
       <div className="hero-copy">
-        <div className="hero-status">
+        <m.div className="hero-status" {...rise(0.05)}>
           <span className="status-dot" aria-hidden="true" />
-          <span>
-            {profile.role} · {profile.company}
-          </span>
+          <span>{profile.status}</span>
+          <span className="hero-previously">Prev. {profile.previously}</span>
           <span className="hero-location">
             {profile.location} · {localTime} SGT
           </span>
-        </div>
+        </m.div>
 
-        <p className="hero-overline">Backend · data platforms · operator tools</p>
+        <m.p className="hero-overline" {...rise(0.15)}>
+          Backend · data platforms · operator tools
+        </m.p>
         <h1 id="hero-heading">
-          Systems that hold up <em>when the real world doesn’t.</em>
+          <MaskLine delay={0.2}>Systems that hold up</MaskLine>{' '}
+          <em>
+            <MaskLine delay={0.36}>when the real world doesn’t.</MaskLine>
+          </em>
         </h1>
         <div className="hero-body">
-          <div>
+          <m.div {...rise(0.55)}>
             <p className="hero-intro">{profile.valueProp}</p>
 
             <div className="hero-actions">
@@ -50,14 +79,22 @@ export function HeroTile() {
                 <Icon name="arrowRight" size={15} />
               </a>
             </div>
-          </div>
+          </m.div>
 
-          <p className="hero-note">
+          <m.p className="hero-note" {...rise(0.7)}>
             Most of what I build sits where software meets something unforgiving: a market
             open, a dropped LTE link, an operator working fast in the field. I care about
             what the system does on the bad day.
-          </p>
+          </m.p>
         </div>
+
+        <m.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.2, delay: 0.9 }}
+        >
+          <SignalScope />
+        </m.div>
       </div>
     </section>
   );

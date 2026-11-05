@@ -21,12 +21,13 @@ export function ContactTile() {
       <p className="section-kicker">Say hello</p>
       <h2 id="contact-heading" className="section-title section-title--compact">Contact</h2>
       <p className="contact-copy">
-        Email is best. I&apos;m happy to talk about robotics, capture systems, or a
+        I&apos;m looking for my next role — backend, data platforms, or robotics
+        infrastructure. Email is best, and I&apos;m just as happy to talk about a
         difficult engineering problem you&apos;re trying to untangle.
       </p>
       <p className="contact-status">
         <i aria-hidden="true" />
-        Online · Singapore
+        Open to new roles · Singapore
       </p>
 
       <div className="contact-actions">

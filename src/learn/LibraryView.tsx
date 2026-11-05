@@ -12,8 +12,8 @@ import { Icon } from '../components/Icon';
 import { fetchLibrary } from './api';
 import { LOCAL_LIBRARY, formatBytes, libraryHref } from './seekUrl';
 import type { LibraryItem, LibraryManifest } from './types';
+import { SITE_TITLE } from '../data/profile';
 
-const PAGE_TITLE = 'Rohan Bahl — Founding Engineer at Cortex AI';
 
 /** "reference-library" → "Reference library". */
 function label(slug: string): string {
@@ -112,7 +112,7 @@ export default function LibraryView() {
       .catch(() => alive && setFailed(true));
     return () => {
       alive = false;
-      document.title = PAGE_TITLE;
+      document.title = SITE_TITLE;
     };
   }, []);
 

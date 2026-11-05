@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { m } from 'framer-motion';
 import { Icon } from '../Icon';
+import { EASE_OUT } from '../motion/ease';
 import { fetchManifest } from '../../learn/api';
 import type { LearnManifest } from '../../learn/types';
 
@@ -40,7 +42,14 @@ export function LearnTile() {
   const anchors = manifest.entries.reduce((sum, e) => sum + e.markerCount, 0);
 
   return (
-    <section className="learn-rail" aria-labelledby="learn-heading">
+    <m.section
+      className="learn-rail"
+      aria-labelledby="learn-heading"
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.8, ease: EASE_OUT }}
+    >
       <div className="learn-rail-intro">
         <h2 id="learn-heading">On the shelf</h2>
         <p>
@@ -101,6 +110,6 @@ export function LearnTile() {
           </span>
         </p>
       </div>
-    </section>
+    </m.section>
   );
 }

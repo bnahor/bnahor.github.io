@@ -20,10 +20,9 @@ export const experience: Experience[] = [
     role: 'Founding Engineer',
     location: 'Singapore',
     start: 'Jan 2026',
-    end: 'Present',
-    current: true,
+    end: 'Sep 2026',
     summary:
-      'I work on the capture stack behind large-scale human-motion datasets.',
+      'I worked on the capture stack behind large-scale human-motion datasets.',
     story:
       'A client’s pose stream started jittering badly enough to stop R&D. The regression had already held work up for about six weeks. I traced it to smoothing being applied twice to velocity derivatives. Three hours later, the reconstruction was stable again.',
     metrics: ['1.5 months unblocked', '20 min → <2 min sync', '50+ operators'],

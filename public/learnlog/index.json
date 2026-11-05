@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-03T16:53:15.590Z",
+  "generatedAt": "2026-11-05T22:31:49.994Z",
   "entries": [
     {
       "id": "2026-09-03-modern-robotics-dynamics",
@@ -7,9 +7,9 @@
       "kind": "lecture",
       "status": "active",
       "source": "https://www.youtube.com/watch?v=1U6y_68CjeY",
-      "sourcePdf": "https://hades.mech.northwestern.edu/images/7/7f/MR.pdf",
-      "library": "prep-robotics-modern-robotics",
-      "libraryPath": "prep/robotics/modern_robotics.pdf",
+      "sourcePdf": "",
+      "library": "",
+      "libraryPath": "",
       "progress": 84,
       "tags": [
         "robotics",
@@ -29,8 +29,8 @@
       "status": "active",
       "source": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
       "sourcePdf": "",
-      "library": "prep-computer-systems-operating-systems-three-easy-pieces-v1-10",
-      "libraryPath": "prep/computer-systems/Operating Systems - Three Easy Pieces (v1.10).pdf",
+      "library": "",
+      "libraryPath": "",
       "progress": 8,
       "tags": [
         "os",
@@ -42,27 +42,6 @@
       "markerCount": 4,
       "noteCount": 5,
       "blurb": "Working through it a chapter at a time, notes while reading. The PDF lives in"
-    },
-    {
-      "id": "2026-09-03-ddia",
-      "title": "Designing Data-Intensive Applications",
-      "kind": "book",
-      "status": "queued",
-      "source": "https://dataintensive.net/",
-      "sourcePdf": "",
-      "library": "prep-computer-systems-designing-data-intensive-applications-2nd-edition",
-      "libraryPath": "prep/computer-systems/Designing Data-Intensive Applications (2nd Edition).pdf",
-      "progress": 0,
-      "tags": [
-        "systems",
-        "data"
-      ],
-      "started": "",
-      "finished": "",
-      "updated": "2026-09-03",
-      "markerCount": 0,
-      "noteCount": 1,
-      "blurb": "Second edition. I've read the first edition's storage and replication"
     },
     {
       "id": "2026-09-03-motion-planning-overview",
@@ -84,6 +63,27 @@
       "markerCount": 0,
       "noteCount": 1,
       "blurb": "Queued next in the series — the planning chapter, which is the half I"
+    },
+    {
+      "id": "2026-09-03-ddia",
+      "title": "Designing Data-Intensive Applications",
+      "kind": "book",
+      "status": "queued",
+      "source": "https://dataintensive.net/",
+      "sourcePdf": "",
+      "library": "",
+      "libraryPath": "",
+      "progress": 0,
+      "tags": [
+        "systems",
+        "data"
+      ],
+      "started": "",
+      "finished": "",
+      "updated": "2026-09-03",
+      "markerCount": 0,
+      "noteCount": 1,
+      "blurb": "Second edition. I've read the first edition's storage and replication"
     },
     {
       "id": "2026-09-03-refactoring-ui",

@@ -254,3 +254,27 @@
   color: var(--line-hot);
 }
 
+
+/* Scroll-drawn trace over the per-entry rails; scaleY is driven by scroll. */
+.experience-console {
+  position: relative;
+}
+
+.experience-trace {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  bottom: 0;
+  left: 1rem;
+  width: 1px;
+  background: linear-gradient(var(--ghost), rgba(248, 248, 255, 0.55));
+  box-shadow: 0 0 8px rgba(248, 248, 255, 0.5);
+  transform-origin: top;
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .experience-trace {
+    left: 0.7rem;
+  }
+}

@@ -1,30 +1,63 @@
+import { useRef } from 'react';
+import { m, useScroll, useSpring } from 'framer-motion';
 import { experience } from '../../data/experience';
 import { Icon } from '../Icon';
+import { EASE_OUT } from '../motion/ease';
+import { Reveal } from '../motion/Reveal';
+
+// The trace and the nodes share one trigger line, 65% down the viewport, so
+// each node lights exactly as the trace reaches it.
+const TRIGGER = '65%';
+const DIM = 'rgba(239, 239, 232, 0.45)';
+const LIT = '#f8f8ff';
+// Bottom edge at the trigger line; the top edge is pushed far up so a node
+// still lights when an anchor jump lands past it without scrolling through.
+const NODE_MARGIN = `100000px 0px -${100 - parseInt(TRIGGER)}% 0px`;
 
 export function ExperienceTile() {
+  const consoleRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: consoleRef,
+    offset: [`start ${TRIGGER}`, `end ${TRIGGER}`],
+  });
+  const traceScale = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.4 });
+
   return (
     <section id="experience" className="experience-section" aria-labelledby="experience-heading">
-      <div className="section-heading">
+      <Reveal className="section-heading">
         <div>
-          <p className="section-kicker">Work log · 2023–Present</p>
+          <p className="section-kicker">Work log · 2023–2026</p>
           <h2 id="experience-heading" className="section-title">Experience</h2>
         </div>
         <p className="section-description">
           The systems I shipped, what broke, and the measurable result.
         </p>
-      </div>
+      </Reveal>
 
-      <div className="experience-console">
+      <div ref={consoleRef} className="experience-console">
+        <m.span className="experience-trace" aria-hidden="true" style={{ scaleY: traceScale }} />
+
         {experience.map((item) => {
           const remainingBullets = item.bullets.slice(item.featuredBulletCount);
 
           return (
-            <article
+            <m.article
               key={`${item.company}-${item.role}`}
               className={`log-entry ${item.current ? 'log-entry--current' : ''}`}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.8, ease: EASE_OUT }}
             >
               <div className="log-time">
-                <span className="log-node" aria-hidden="true" />
+                <m.span
+                  className="log-node"
+                  aria-hidden="true"
+                  initial={{ backgroundColor: DIM, boxShadow: `0 0 0 1px ${DIM}, 0 0 0px rgba(248, 248, 255, 0)` }}
+                  whileInView={{ backgroundColor: LIT, boxShadow: `0 0 0 1px ${LIT}, 0 0 14px rgba(248, 248, 255, 1)` }}
+                  viewport={{ once: true, margin: NODE_MARGIN }}
+                  transition={{ duration: 0.35 }}
+                />
                 <time>{item.start}</time>
                 <span>{item.end}</span>
               </div>
@@ -83,7 +116,7 @@ export function ExperienceTile() {
                   ))}
                 </div>
               </div>
-            </article>
+            </m.article>
           );
         })}
       </div>

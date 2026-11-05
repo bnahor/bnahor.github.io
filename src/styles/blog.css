@@ -1,0 +1,382 @@
+/* ------------------------------------------------------------------ *
+ * Blog: homepage "Writing" rail + the #/blog index and post pages.
+ * Reuses the shelf page's heading, chips and search; same two-colour
+ * system, hierarchy from weight, scale and 1px lines.
+ * ------------------------------------------------------------------ */
+
+/* ------------------------------------------------- homepage rail ----- */
+
+.writing-item {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid var(--line);
+  transition: background-color 220ms ease;
+}
+
+.writing-item:last-child {
+  border-bottom: 0;
+}
+
+.writing-item:hover {
+  background: var(--ghost-dim);
+}
+
+.writing-item-date {
+  color: var(--faint);
+  font: 500 0.68rem/1.4 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.writing-item-body h3 {
+  font-family: var(--display);
+  font-size: clamp(1.45rem, 2vw, 1.85rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.writing-item-body p {
+  margin-top: 0.5rem;
+  color: var(--soft);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.writing-item-arrow,
+.post-row-arrow {
+  color: var(--faint);
+  transition:
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 200ms ease;
+}
+
+.writing-item:hover .writing-item-arrow,
+.post-row:hover .post-row-arrow {
+  color: var(--ghost);
+  transform: translateX(4px);
+}
+
+/* ------------------------------------------------------ index page --- */
+
+.blog-heading .section-description {
+  margin-top: 1.1rem;
+}
+
+.post-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post-list > li {
+  border-bottom: 1px solid var(--line);
+}
+
+.post-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr) 12rem auto;
+  align-items: baseline;
+  gap: 2rem;
+  padding: 2rem 0.5rem;
+  overflow: hidden;
+}
+
+/* A hairline that wipes across the row on hover. */
+.post-row::after {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--ghost);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.post-row:hover::after {
+  transform: scaleX(1);
+}
+
+.post-row-date,
+.post-row-meta {
+  color: var(--faint);
+  font: 500 0.68rem/1.5 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.post-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.post-row-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+}
+
+.post-row-summary {
+  max-width: 52ch;
+  color: var(--soft);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.post-row-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: right;
+}
+
+.post-draft {
+  padding: 0.2rem 0.4rem;
+  border: 1px dashed var(--line-hot);
+  color: var(--soft);
+  font: 500 0.6rem/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------- post page --- */
+
+.post {
+  max-width: 46rem;
+}
+
+.post-header {
+  padding-bottom: 2.5rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid var(--line-hot);
+}
+
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  color: var(--faint);
+  font: 500 0.7rem/1.4 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.post-title {
+  margin-top: 1.5rem;
+  font-family: var(--display);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.post-summary {
+  margin-top: 1.5rem;
+  color: var(--ghost);
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.post-tags span {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--line);
+  color: var(--soft);
+  font: 500 0.64rem/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.prose {
+  color: var(--soft);
+  font-size: 1.06rem;
+  line-height: 1.8;
+}
+
+.prose > * + * {
+  margin-top: 1.4rem;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin-top: 3rem;
+  color: var(--text);
+  font-family: var(--display);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.prose h2 {
+  font-size: 2rem;
+}
+
+.prose h3 {
+  font-size: 1.5rem;
+}
+
+.prose h4 {
+  font-size: 1.2rem;
+}
+
+.prose strong {
+  color: var(--text);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.25rem;
+}
+
+.prose li + li {
+  margin-top: 0.5rem;
+}
+
+.prose li::marker {
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 0.85em;
+}
+
+.prose blockquote {
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--ghost);
+  color: var(--ghost);
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.prose-code {
+  border: 1px solid var(--line);
+  background: rgba(10, 10, 11, 0.85);
+}
+
+.prose-code figcaption {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--faint);
+  font: 500 0.62rem/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.prose-code pre {
+  margin: 0;
+  padding: 1.1rem 1rem;
+  overflow-x: auto;
+  color: var(--text);
+  font: 400 0.84rem/1.65 var(--mono);
+}
+
+.post-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin-top: 4rem;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.post-pager > * {
+  background: var(--black);
+}
+
+.post-pager a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.5rem;
+  font-family: var(--display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  transition: background-color 220ms ease;
+}
+
+.post-pager a:hover {
+  background: var(--ghost-dim);
+}
+
+.post-pager a span {
+  color: var(--faint);
+  font: 500 0.64rem/1 var(--mono);
+  letter-spacing: 0.14em;
+}
+
+.post-pager-next {
+  text-align: right;
+}
+
+/* ------------------------------------------------------ responsive --- */
+
+@media (max-width: 760px) {
+  .writing-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem 1rem;
+    padding: 1.35rem 1.25rem;
+  }
+
+  .writing-item-date {
+    grid-column: 1 / -1;
+  }
+
+  .post-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem 1rem;
+    padding: 1.5rem 0;
+  }
+
+  .post-row-date {
+    grid-column: 1 / -1;
+  }
+
+  .post-row-meta {
+    grid-column: 1;
+    flex-direction: row;
+    gap: 1rem;
+    text-align: left;
+  }
+
+  .post-row-arrow {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .post-pager {
+    grid-template-columns: 1fr;
+  }
+
+  .post-pager-next {
+    text-align: left;
+  }
+}
