@@ -1,5 +1,5 @@
 /** Default document title; routed pages restore it when they unmount. */
-export const SITE_TITLE = 'Rohan Bahl — Backend & Robotics Systems Engineer';
+export const SITE_TITLE = 'Rohan Bahl — Engineer';
 
 const publicAsset = (fileName: string) => `${import.meta.env.BASE_URL}${fileName}`;
 
@@ -9,7 +9,7 @@ export const profile = {
   previously: 'Founding Engineer · Cortex AI',
   location: 'Singapore',
   logline:
-    'Backend and robotics systems engineer. I built the capture stack behind large-scale human-motion datasets as a founding engineer at Cortex AI. Open to roles in San Francisco, New York and Singapore.',
+    'Engineer. Most recently founding engineer at Cortex AI, and before that at a hedge fund and a robotics company. Open to roles in San Francisco, New York and Singapore.',
   email: 'bnahor.dev@gmail.com',
   links: {
     github: 'https://github.com/bnahor',

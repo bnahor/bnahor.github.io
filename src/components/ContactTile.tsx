@@ -19,8 +19,8 @@ export function ContactTile() {
     <section id="contact" className="fin" aria-labelledby="contact-heading">
       <h2 id="contact-heading" className="reel-title">Contact</h2>
       <p className="fin-copy">
-        I’m looking for my next role in backend, data platforms or robotics infrastructure, in San
-        Francisco, New York or Singapore. I’d consider elsewhere for the right company.
+        I’m a generalist looking for my next role, in San Francisco, New York or Singapore. I’d
+        consider elsewhere for the right company.
       </p>
       <a className="fin-address" href={`mailto:${profile.email}`}>
         {profile.email}
