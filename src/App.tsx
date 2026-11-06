@@ -1,30 +1,40 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { LazyMotion, MotionConfig, domAnimation } from 'framer-motion';
 import { ContactTile } from './components/ContactTile';
-import { OutcomeRail } from './components/OutcomeRail';
 import { SiteHeader } from './components/SiteHeader';
+import { Stage } from './components/stage/Stage';
 import { EducationTile } from './components/tiles/EducationTile';
 import { ExperienceTile } from './components/tiles/ExperienceTile';
 import { HeroTile } from './components/tiles/HeroTile';
 import { LearnTile } from './components/tiles/LearnTile';
 import { ProjectsTile } from './components/tiles/ProjectsTile';
+import { ScenesTile } from './components/tiles/ScenesTile';
+import { SkillsTile } from './components/tiles/SkillsTile';
+import { WritingTile } from './components/tiles/WritingTile';
 import { profile } from './data/profile';
 
-// Both learning routes are their own chunks — neither downloads until
-// visited, and the library catalogue in particular is a large payload.
+// Each routed page is its own chunk — none downloads until visited, and the
+// library catalogue in particular is a large payload.
 const ShelfView = lazy(() => import('./learn/ShelfView'));
 const LibraryView = lazy(() => import('./learn/LibraryView'));
+const BlogView = lazy(() => import('./blog/BlogView'));
 
-type Route = 'home' | 'shelf' | 'library';
+type Route = 'home' | 'shelf' | 'library' | 'blog';
+
+const PAGE_NAMES: Record<Exclude<Route, 'home'>, string> = {
+  shelf: 'shelf',
+  library: 'library',
+  blog: 'blog',
+};
 
 function readRoute(): Route {
   const hash = window.location.hash;
   if (hash.startsWith('#/shelf')) return 'shelf';
   if (hash.startsWith('#/library')) return 'library';
+  if (hash.startsWith('#/blog')) return 'blog';
   return 'home';
 }
 
-/** Hash-based routing: #/shelf and #/library are pages, everything else is a
+/** Hash-based routing: #/shelf, #/library and #/blog are pages, everything else is a
  *  same-page anchor on the portfolio (so #experience etc. keep working). */
 function useRoute(): Route {
   const [route, setRoute] = useState(readRoute);
@@ -54,54 +64,72 @@ export default function App() {
   }, [onPage]);
 
   return (
-    <LazyMotion features={domAnimation} strict>
-      <MotionConfig reducedMotion="user">
-        {onPage ? (
-          <Suspense
-            fallback={
-              <div className="site-shell">
-                <main className="site-main shelf-main">
-                  <p className="shelf-fallback">
-                    Opening the {route === 'library' ? 'library' : 'shelf'}…
-                  </p>
-                </main>
-              </div>
-            }
-          >
-            {route === 'library' ? <LibraryView /> : <ShelfView />}
-          </Suspense>
-        ) : (
-          <div className="site-shell">
-            <a className="skip-link" href="#main-content">
-              Skip to content
-            </a>
+    <div key={route} className="route">
+      {onPage ? (
+        <Suspense
+          fallback={
+            <div className="page">
+              <main className="page-main">
+                <p className="page-note">Opening the {PAGE_NAMES[route]}…</p>
+              </main>
+            </div>
+          }
+        >
+          {route === 'library' ? <LibraryView /> : route === 'blog' ? <BlogView /> : <ShelfView />}
+        </Suspense>
+      ) : (
+        <div className="home">
+          <a className="skip-link" href="#main-content">
+            Skip to content
+          </a>
 
-            <div className="time-grid" aria-hidden="true" />
+          <Stage />
+          <SiteHeader />
 
-            <SiteHeader />
-
-            <main id="main-content" className="site-main">
+          <main id="main-content" className="home-main">
+            <div id="stage-sections">
               <HeroTile />
-              <OutcomeRail />
-              <LearnTile />
+              <ScenesTile />
+            </div>
+
+            <div id="end-reel" className="reel">
               <ExperienceTile />
               <ProjectsTile />
+              <SkillsTile />
+              <EducationTile />
+              <section className="reel-section" aria-labelledby="notes-heading">
+                <h2 id="notes-heading" className="reel-title">Notes</h2>
+                <div className="notes-grid">
+                  <WritingTile />
+                  <LearnTile />
+                </div>
+              </section>
+              <ContactTile />
 
-              <div className="closing-grid">
-                <EducationTile />
-                <ContactTile />
-              </div>
-            </main>
-
-            <footer className="site-footer">
-              <p>
-                © {new Date().getFullYear()} {profile.name}
-              </p>
-              <p>Designed and built in Singapore.</p>
-            </footer>
-          </div>
-        )}
-      </MotionConfig>
-    </LazyMotion>
+              <footer className="reel-footer">
+                <p>
+                  © {new Date().getFullYear()} {profile.name}. Designed and built in Singapore.
+                </p>
+                <p>
+                  Motion from{' '}
+                  <a href="https://www.ianxmason.com/100style/" target="_blank" rel="noreferrer">
+                    The 100STYLE Dataset
+                  </a>{' '}
+                  by Ian Mason,{' '}
+                  <a
+                    href="https://creativecommons.org/licenses/by/4.0/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    CC BY 4.0
+                  </a>
+                  . Cut to single strides, rebuilt on neutral proportions and smoothed.
+                </p>
+              </footer>
+            </div>
+          </main>
+        </div>
+      )}
+    </div>
   );
 }

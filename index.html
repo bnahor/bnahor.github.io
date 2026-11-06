@@ -3,20 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0b0b0b" />
+    <meta name="theme-color" content="#11110e" />
     <style>
-      html, body { margin: 0; background: #050505; color: #f0f1eb; }
-      .boot-fallback { min-height: 100vh; padding: 7vw; box-sizing: border-box; display: grid; align-content: center; background-image: linear-gradient(rgba(184,255,61,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,255,61,.04) 1px,transparent 1px); background-size: 48px 48px; font-family: Arial, sans-serif; }
-      .boot-fallback small { color: #9aca3c; font: 12px monospace; letter-spacing: .1em; }
-      .boot-fallback h1 { max-width: 900px; margin: 24px 0; font-size: clamp(52px,9vw,128px); line-height: .82; letter-spacing: -.045em; }
-      .boot-fallback a { width: fit-content; padding: 14px 18px; border: 1px solid #b8ff3d; color: #b8ff3d; font: 12px monospace; text-decoration: none; }
+      html, body { margin: 0; background: #a8a79f; color: #11110e; }
+      .boot-fallback { min-height: 100vh; padding: 7vw; box-sizing: border-box; display: grid; align-content: end; font-family: Arial, sans-serif; }
+      .boot-fallback h1 { margin: 0 0 16px; font-size: min(12vw, 21vh); font-weight: 200; line-height: .86; text-transform: uppercase; }
+      .boot-fallback p { margin: 0 0 16px; max-width: 34rem; line-height: 1.45; }
+      .boot-fallback a { color: inherit; }
     </style>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400&family=Newsreader:ital,opsz,wght@1,6..72,500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,300..500&display=swap"
     />
 
     <link rel="preload" href="%BASE_URL%site_icon.svg" as="image" type="image/svg+xml" />
@@ -25,18 +25,18 @@
     <link rel="icon" type="image/png" href="%BASE_URL%site_icon.png" />
     <link rel="apple-touch-icon" href="%BASE_URL%site_icon.png" />
 
-    <title>Rohan Bahl — Founding Engineer at Cortex AI</title>
+    <title>Rohan Bahl — Backend & Robotics Systems Engineer</title>
     <meta
       name="description"
-      content="Rohan Bahl builds dependable robotics capture systems, data platforms, and operator-facing tools as a Founding Engineer at Cortex AI."
+      content="Rohan Bahl builds dependable robotics capture systems, data platforms, and operator-facing tools. Formerly a Founding Engineer at Cortex AI; open to new roles."
     />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://bnahor.github.io/" />
-    <meta property="og:title" content="Rohan Bahl — Founding Engineer at Cortex AI" />
+    <meta property="og:title" content="Rohan Bahl — Backend & Robotics Systems Engineer" />
     <meta
       property="og:description"
-      content="Keeping cameras, trackers, and operators on the same clock. Robotics capture systems and operator tools by Rohan Bahl."
+      content="Robotics capture systems, data platforms and operator tools by Rohan Bahl."
     />
     <meta property="og:image" content="https://bnahor.github.io/og-card.png" />
     <meta property="og:image:width" content="1200" />
@@ -51,12 +51,12 @@
         "@context": "https://schema.org",
         "@type": "Person",
         "name": "Rohan Bahl",
-        "jobTitle": "Founding Engineer",
-        "worksFor": {
+        "jobTitle": "Software Engineer",
+        "alumniOf": {
           "@type": "Organization",
           "name": "Cortex AI"
         },
-        "description": "Founding Engineer building dependable robotics capture systems, data platforms, and operator-facing tools.",
+        "description": "Engineer building dependable robotics capture systems, data platforms, and operator-facing tools.",
         "url": "https://bnahor.github.io/",
         "email": "mailto:bnahor.dev@gmail.com",
         "sameAs": [
@@ -79,9 +79,9 @@
   <body>
     <div id="root">
       <main class="boot-fallback">
-        <small>ROHAN BAHL · FOUNDING ENGINEER · CORTEX AI</small>
-        <h1>KEEPING SYSTEMS ON THE SAME CLOCK.</h1>
-        <a href="mailto:bnahor.dev@gmail.com">EMAIL ROHAN →</a>
+        <h1>Rohan<br />Bahl</h1>
+        <p>Backend and robotics systems engineer. Open to new roles.</p>
+        <a href="mailto:bnahor.dev@gmail.com">bnahor.dev@gmail.com</a>
       </main>
     </div>
     <script type="module" src="/src/main.tsx"></script>

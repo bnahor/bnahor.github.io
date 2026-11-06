@@ -20,20 +20,19 @@ export const experience: Experience[] = [
     role: 'Founding Engineer',
     location: 'Singapore',
     start: 'Jan 2026',
-    end: 'Present',
-    current: true,
+    end: 'Sep 2026',
     summary:
-      'I work on the capture stack behind large-scale human-motion datasets.',
+      'I worked on the capture stack behind large-scale human-motion datasets.',
     story:
-      'A client’s pose stream started jittering badly enough to stop R&D. The regression had already held work up for about six weeks. I traced it to smoothing being applied twice to velocity derivatives. Three hours later, the reconstruction was stable again.',
+      'A client’s pose stream started jittering badly enough to stop R&D. The regression had already held work up for about six weeks. I traced it to compounding smoothing on velocity derivatives. Three hours later, the reconstruction was stable again.',
     metrics: ['1.5 months unblocked', '20 min → <2 min sync', '50+ operators'],
     bullets: [
       'The fix combined raw-derivative 1-Euro filtering, inter-MCP distance constraints, and Jakobsen relaxation.',
-      'I wrote the clock-authority layer for Vive Trackers and ZED Boxes on Jetson Orin. It kept video, poses, and IMU samples aligned for 50+ operators across 1,000+ hours.',
-      'Three cameras arrived without a shared clock. A VLM alignment pass plus cross-correlation fallback cut session sync time by 90%.',
-      'I replaced three weeks of manual planning with a sub-minute allocation workflow across Environment, Scene, Task, and Operator.',
-      'I built the mobile capture app in under a week. Native Swift, ARKit, Kotlin, CameraX, and ARCore sit behind one Dart interface.',
-      'Browser uploads had to survive weak connections and 3–4K-file batches. Resumable GCS uploads, retry, duplicate detection, and offset recovery stopped the daily failures.',
+      'I wrote the clock-authority layer for a multi-human Vive Tracker and ZED Box stack on Jetson Orin. It kept video, poses, and IMU samples aligned for 50+ operators across 1,000+ hours.',
+      'Three cameras arrived without a shared clock. A VLM alignment algorithm with a cross-correlation fallback cut session sync from 20 minutes to under two.',
+      'I replaced three weeks of manual planning with a sub-minute allocation workflow across Environment, Scene, Task, and Operator, built on a greedy diversity-maximising optimiser.',
+      'I built the mobile capture app in under a week. Native Swift, ARKit, Kotlin, CameraX, and ARCore modules capture per-frame LiDAR and depth behind one Dart interface.',
+      'Operators in Singapore, India, and the Philippines were losing uploads on weak connections across 3–4K-file batches. Resumable GCS uploads with retry, duplicate detection, and offset recovery stopped the daily failures.',
     ],
     featuredBulletCount: 3,
     tech: [
@@ -61,8 +60,8 @@ export const experience: Experience[] = [
       'A routine Grafana infrastructure update was a ten-hour manual slog across dev, staging, and production. I wrote an Ansible and Python toolkit that turned it into a five-minute job.',
     metrics: ['4 services', '99% less Grafana toil', '95% faster retrieval'],
     bullets: [
-      'The SRE team needed Grafana alerts routed in under a second. I replaced the legacy path with four Spring Boot services over ActiveMQ and Redis.',
-      'TradeOps used to wait 60 seconds for a FIX log. The React and Spring Boot viewer returned it in three and was adopted by 50+ users.',
+      'The SRE team needed Grafana alerts on screen in under a second. I replaced the legacy Nimsoft system with four Spring Boot services over ActiveMQ, Redis, and WebSocket.',
+      'TradeOps used to wait 60 seconds for a FIX log. The React and Spring Boot viewer I delivered in two weeks returned it in three, was adopted by 50+ users, and ended a legacy licence.',
     ],
     featuredBulletCount: 2,
     tech: ['Spring Boot', 'ActiveMQ', 'Redis', 'React', 'TypeScript', 'Ansible', 'Grafana'],
@@ -76,10 +75,10 @@ export const experience: Experience[] = [
     summary:
       'Telemetry infrastructure and field tools for autonomous robots.',
     story:
-      'Robots kept losing data whenever LTE dropped mid-run in the field. Batching writes with offline caching and recovery made the telemetry 40% more reliable.',
+      'Robots kept losing data whenever LTE dropped mid-run in the field. Batching and offline caching in the firmware, built with the hardware engineers, made the telemetry 40% more reliable.',
     metrics: ['5M+ records / run', '30% fewer diagnostics', '40% more reliable data'],
     bullets: [
-      'Each telemetry run produced more than five million sensor records. I built the Lambda, S3, and DynamoDB pipeline that validated and processed them.',
+      'Each telemetry run produced more than five million sensor records across 5+ robots. I built the Lambda, S3, and DynamoDB pipeline that validated and processed them.',
       'A Next.js and Mapbox operations view put live telemetry and robot location in one place, cutting manual field diagnostics by 30%.',
     ],
     featuredBulletCount: 2,

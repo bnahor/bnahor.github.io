@@ -1,0 +1,373 @@
+/* The homepage stage: everything that sits on the grey cyc. */
+.home {
+  position: relative;
+}
+
+.cyc {
+  position: fixed;
+  z-index: 0;
+  inset: 0 0 auto;
+  height: 100lvh;
+  background:
+    radial-gradient(70% 62% at 66% 42%, var(--cyc-hi), transparent 72%),
+    linear-gradient(180deg, var(--cyc) 0 62%, var(--cyc-lo) 100%);
+}
+
+/* Sized to the large viewport: phone URL bars must not resize the canvas. */
+.stage-canvas {
+  position: fixed;
+  z-index: 1;
+  inset: 0 0 auto;
+  width: 100%;
+  height: 100lvh;
+  max-width: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 700ms ease;
+}
+
+.stage-canvas.is-live {
+  opacity: 1;
+}
+
+.home-main {
+  position: relative;
+  z-index: 3;
+}
+
+.stage-bar {
+  position: fixed;
+  z-index: 30;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: var(--bar);
+  padding: 0 var(--gutter-r) env(safe-area-inset-bottom, 0px) var(--gutter);
+  background: var(--ink);
+  color: var(--paper);
+  font: 400 0.625rem/1 var(--data);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transition: transform 320ms ease;
+}
+
+.stage-bar.is-away {
+  transform: translateY(100%);
+}
+
+.stage-bar-group {
+  display: flex;
+  flex: 1 1 0;
+  gap: 1.5rem;
+}
+
+.stage-bar-group:last-child {
+  justify-content: flex-end;
+}
+
+.stage-bar-wide {
+  display: none;
+}
+
+.stage-state {
+  color: var(--spike);
+}
+
+.take-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  min-height: 44px;
+  font-variant-numeric: tabular-nums;
+}
+
+.take-next {
+  padding: 0.35em 0.5em;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+@media (hover: hover) {
+  .take-button:hover .take-next {
+    background: var(--spike);
+  }
+}
+
+@media (min-width: 720px) {
+  .stage-bar-wide {
+    display: inline;
+  }
+}
+
+@media (max-width: 359px) {
+  .stage-timecode {
+    display: none;
+  }
+}
+
+/* Title card */
+.hero {
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 var(--gutter-r) calc(var(--bar) + 1.25rem) var(--gutter);
+}
+
+@media (min-height: 501px) and (min-aspect-ratio: 1/1) {
+  .hero {
+    padding-bottom: calc(min(96px, max(52px, 9vh)) + 1.25rem);
+  }
+}
+
+.hero-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.hero-logline {
+  max-width: 34rem;
+  font-size: 1.0625rem;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.5rem;
+}
+
+/* Phones and tall tablets stack the copy under the performer. */
+@media (max-aspect-ratio: 1/1) {
+  .hero-title {
+    font-size: min(23vw, 15vh);
+  }
+
+  .hero-card {
+    gap: 0.6rem;
+  }
+
+  .hero-logline {
+    font-size: clamp(0.9375rem, 2.1vh, 1.125rem);
+  }
+
+  .hero-actions {
+    gap: 0 1.1rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* Small phones: the performer needs the room more than the third link does. */
+@media (max-aspect-ratio: 1/1) and (max-height: 640px) {
+  .hero-title {
+    font-size: 13vh;
+  }
+
+  .hero-card {
+    gap: 0.35rem;
+  }
+
+  .hero-logline {
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+
+  .hero-story-link {
+    display: none;
+  }
+}
+
+/* Landscape phones: short, so everything tightens and the copy stays clear of the figure. */
+@media (max-height: 500px) and (min-aspect-ratio: 1/1) {
+  .hero {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
+  .hero-title {
+    font-size: 19vh;
+  }
+
+  .hero-card {
+    gap: 0.25rem;
+  }
+
+  .hero-logline {
+    max-width: 52vw;
+    font-size: 0.875rem;
+  }
+
+  .hero-actions {
+    gap: 0 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-aspect-ratio: 1/1) and (max-width: 1100px) {
+  .hero-logline {
+    max-width: 44vw;
+  }
+}
+
+/* Scenes: copy on one side, the performer plays it on the other. */
+.scene {
+  display: flex;
+  min-height: 92svh;
+  align-items: center;
+  padding: 5rem var(--gutter-r) 5rem var(--gutter);
+}
+
+.scene-copy {
+  display: grid;
+  width: 100%;
+  max-width: 34rem;
+  gap: 0.75rem;
+}
+
+@media (min-aspect-ratio: 1/1) and (max-width: 1100px) {
+  .scene-copy {
+    max-width: 46vw;
+  }
+}
+
+.scene-slug {
+  font: 400 0.6875rem/1.3 var(--data);
+}
+
+.scene h2 {
+  font: 300 clamp(2rem, 4.4vw, 4rem)/1.02 var(--display);
+  font-variation-settings: 'wdth' 88, 'wght' 300;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.scene-copy > p:not(.scene-slug) {
+  max-width: 30rem;
+  font-size: 1.0625rem;
+  text-wrap: pretty;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .scene {
+    min-height: 100svh;
+    align-items: flex-end;
+    padding: 4rem var(--gutter-r) calc(var(--bar) + 1.4rem) var(--gutter);
+  }
+
+  .scene h2 {
+    font-size: clamp(1.75rem, 8.2vw, 3.25rem);
+  }
+
+  .scene-copy > p:not(.scene-slug) {
+    font-size: 1rem;
+  }
+}
+
+@media (max-height: 500px) and (min-aspect-ratio: 1/1) {
+  .scene {
+    padding: 3.5rem var(--gutter-r) 3.5rem var(--gutter);
+  }
+
+  .scene h2 {
+    font-size: 1.75rem;
+  }
+
+  .scene-copy > p:not(.scene-slug) {
+    font-size: 0.875rem;
+  }
+}
+
+/* Clock scope, drawn in ink on the cyc */
+.scope {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.75rem;
+  font: 400 0.625rem/1 var(--data);
+  font-variant-numeric: tabular-nums;
+}
+
+.scope-labels {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  align-items: center;
+}
+
+.scope-canvas {
+  width: 100%;
+  height: clamp(96px, 16vh, 144px);
+}
+
+.scope-readout {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: 1rem;
+}
+
+.scope-skew {
+  flex: 1;
+}
+
+.scope-state[data-locked='true'] {
+  color: var(--ink);
+  background: var(--spike);
+  padding: 0.2em 0.4em;
+  margin: -0.2em 0;
+}
+
+/* Reticle */
+.reticle {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  display: none;
+  width: 0;
+  height: 0;
+  color: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+
+html.has-reticle .home,
+html.has-reticle .home a,
+html.has-reticle .home button,
+html.has-reticle .home summary {
+  cursor: none;
+}
+
+html.has-reticle .reticle {
+  display: block;
+}
+
+.reticle i {
+  position: absolute;
+  background: currentColor;
+}
+
+.reticle i:nth-child(1) {
+  top: -0.5px;
+  left: -11px;
+  width: 22px;
+  height: 1px;
+}
+
+.reticle i:nth-child(2) {
+  top: -11px;
+  left: -0.5px;
+  width: 1px;
+  height: 22px;
+}
+
+.reticle span {
+  position: absolute;
+  top: 9px;
+  left: 15px;
+  font: 400 0.5625rem/1 var(--data);
+  white-space: nowrap;
+}

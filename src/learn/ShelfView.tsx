@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { m } from 'framer-motion';
 import { SiteHeader } from '../components/SiteHeader';
 import { Icon } from '../components/Icon';
+import { KineticTitle } from '../components/KineticTitle';
 import { fetchEntry, fetchManifest } from './api';
 import { LOCAL_LIBRARY, buildSeekUrl, formatSeconds, libraryHref, pageHref } from './seekUrl';
 import { NoteLines } from './markdown';
 import type { LearnEntry, ManifestEntry } from './types';
+import { SITE_TITLE } from '../data/profile';
 
 const STATUS_FILTERS = ['all', 'active', 'queued', 'done', 'shelved'] as const;
 type StatusFilter = (typeof STATUS_FILTERS)[number];
 
-const PAGE_TITLE = 'Rohan Bahl — Founding Engineer at Cortex AI';
 
 function relDays(iso: string): string {
   const then = Date.parse(`${iso}T00:00:00Z`);
@@ -105,7 +105,7 @@ function EntryBody({ entry }: { entry: LearnEntry }) {
   );
 }
 
-function ShelfRow({ entry, index }: { entry: ManifestEntry; index: number }) {
+function ShelfRow({ entry }: { entry: ManifestEntry }) {
   const [open, setOpen] = useState(false);
   const [full, setFull] = useState<LearnEntry | null>(null);
   const [failed, setFailed] = useState(false);
@@ -129,7 +129,6 @@ function ShelfRow({ entry, index }: { entry: ManifestEntry; index: number }) {
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
       >
-        <span className="shelf-index">{String(index + 1).padStart(2, '0')}</span>
         <span className="shelf-title">{entry.title}</span>
         <span className="shelf-kind">{entry.kind}</span>
         <span className={`shelf-status shelf-status--${entry.status}`}>{entry.status}</span>
@@ -140,12 +139,7 @@ function ShelfRow({ entry, index }: { entry: ManifestEntry; index: number }) {
       </button>
 
       {open && (
-        <m.div
-          className="shelf-row-body"
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.22, ease: 'easeOut' }}
-        >
+        <div className="shelf-row-body">
           {full ? (
             <EntryBody entry={full} />
           ) : failed ? (
@@ -153,7 +147,7 @@ function ShelfRow({ entry, index }: { entry: ManifestEntry; index: number }) {
           ) : (
             <p className="shelf-empty-note">Loading notes…</p>
           )}
-        </m.div>
+        </div>
       )}
     </article>
   );
@@ -175,7 +169,7 @@ export default function ShelfView() {
       .catch(() => alive && setFailed(true));
     return () => {
       alive = false;
-      document.title = PAGE_TITLE;
+      document.title = SITE_TITLE;
     };
   }, []);
 
@@ -195,26 +189,23 @@ export default function ShelfView() {
   }, [entries, query, status]);
 
   return (
-    <div className="site-shell">
-      <div className="time-grid" aria-hidden="true" />
+    <div className="page">
       <SiteHeader />
 
-      <main id="main-content" className="site-main shelf-main">
-        <a className="shelf-back" href="#/">
-          <Icon name="arrowRight" size={13} className="shelf-back-icon" />
+      <main id="main-content" className="page-main">
+        <a className="page-back" href="#/">
+          <Icon name="arrowRight" size={13} className="page-back-icon" />
           Portfolio
         </a>
 
-        <header className="shelf-heading">
-          <div>
-            <h1 className="section-title section-title--compact">The Shelf</h1>
-            <p className="section-description">
-              Everything I&apos;m reading and watching, with notes anchored to the source.
-              Timestamps seek into the video; page markers point back into the book.
-            </p>
-          </div>
+        <header className="page-head">
+          <KineticTitle lines={['The Shelf']} />
+          <p className="page-lede">
+            Everything I&apos;m reading and watching, with notes anchored to the source.
+            Timestamps seek into the video, and page markers point back into the book.
+          </p>
           {entries && (
-            <p className="shelf-stats">
+            <p className="page-stats">
               <span>{entries.length} entries</span>
               <span>
                 {entries.filter((e) => e.status === 'active').length} active ·{' '}
@@ -250,24 +241,24 @@ export default function ShelfView() {
         </div>
 
         {failed ? (
-          <p className="shelf-fallback">
+          <p className="page-note">
             The shelf didn&apos;t load — the notes catalogue may not have been ingested for this
             deploy.
           </p>
         ) : !entries ? (
-          <p className="shelf-fallback">Loading shelf…</p>
+          <p className="page-note">Loading shelf…</p>
         ) : filtered.length === 0 ? (
-          <p className="shelf-fallback">Nothing matches that filter yet.</p>
+          <p className="page-note">Nothing matches that filter yet.</p>
         ) : (
           <div className="shelf-list">
-            {filtered.map((entry, i) => (
-              <ShelfRow key={entry.id} entry={entry} index={i} />
+            {filtered.map((entry) => (
+              <ShelfRow key={entry.id} entry={entry} />
             ))}
           </div>
         )}
       </main>
 
-      <footer className="site-footer">
+      <footer className="page-footer">
         <p>© {new Date().getFullYear()} Rohan Bahl</p>
         <p>Notes authored in Obsidian. Compiled to the shelf.</p>
       </footer>

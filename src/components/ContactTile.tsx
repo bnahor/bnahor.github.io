@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { m } from 'framer-motion';
 import { Icon } from './Icon';
 import { profile } from '../data/profile';
 
@@ -17,52 +16,34 @@ export function ContactTile() {
   };
 
   return (
-    <section id="contact" className="contact-tile" aria-labelledby="contact-heading">
-      <p className="section-kicker">Say hello</p>
-      <h2 id="contact-heading" className="section-title section-title--compact">Contact</h2>
-      <p className="contact-copy">
-        Email is best. I&apos;m happy to talk about robotics, capture systems, or a
-        difficult engineering problem you&apos;re trying to untangle.
+    <section id="contact" className="fin" aria-labelledby="contact-heading">
+      <h2 id="contact-heading" className="reel-title">Next production</h2>
+      <p className="fin-copy">
+        I’m looking for my next role in backend, data platforms or robotics infrastructure, based
+        in Singapore. I’m just as happy to talk through a hard engineering problem.
       </p>
-      <p className="contact-status">
-        <i aria-hidden="true" />
-        Online · Singapore
-      </p>
-
-      <div className="contact-actions">
-        <a className="primary-action" href={`mailto:${profile.email}`}>
-          <Icon name="email" size={17} />
-          Email Rohan
-        </a>
-        <m.button
-          className="secondary-action"
-          type="button"
-          onClick={copyEmail}
-          whileTap={{ scale: 0.97 }}
-          aria-live="polite"
-        >
-          <Icon name={copied ? 'check' : 'clipboard'} size={16} />
+      <a className="fin-address" href={`mailto:${profile.email}`}>
+        {profile.email}
+      </a>
+      <div className="fin-links">
+        <button className="text-link" type="button" onClick={copyEmail} aria-live="polite">
           {copied ? 'Copied' : 'Copy email'}
-        </m.button>
-      </div>
-
-      <p className="contact-address">{profile.email}</p>
-
-      <div className="contact-links">
-        <a href={profile.links.github} target="_blank" rel="noreferrer">
-          GitHub <Icon name="arrowRight" size={13} />
+          {copied && <Icon name="check" size={14} />}
+        </button>
+        <a className="text-link" href={profile.links.resume} target="_blank" rel="noreferrer">
+          Résumé
         </a>
-        <a href={profile.links.linkedin} target="_blank" rel="noreferrer">
-          LinkedIn <Icon name="arrowRight" size={13} />
+        <a className="text-link" href={profile.links.github} target="_blank" rel="noreferrer">
+          GitHub
         </a>
-        <a href={profile.links.x} target="_blank" rel="noreferrer">
-          X <Icon name="arrowRight" size={13} />
+        <a className="text-link" href={profile.links.linkedin} target="_blank" rel="noreferrer">
+          LinkedIn
         </a>
-        <a href={profile.links.instagram} target="_blank" rel="noreferrer">
-          Instagram <Icon name="arrowRight" size={13} />
+        <a className="text-link" href={profile.links.x} target="_blank" rel="noreferrer">
+          X
         </a>
-        <a href={profile.links.resume} target="_blank" rel="noreferrer">
-          Résumé <Icon name="arrowRight" size={13} />
+        <a className="text-link" href={profile.links.instagram} target="_blank" rel="noreferrer">
+          Instagram
         </a>
       </div>
     </section>
