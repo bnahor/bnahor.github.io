@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { SiteHeader } from '../components/SiteHeader';
 import { Icon } from '../components/Icon';
-import { KineticTitle } from '../components/KineticTitle';
 import { SITE_TITLE } from '../data/profile';
 import { formatPostDate, postTags, posts, type Post } from './posts';
 import { Prose } from './Prose';
@@ -44,7 +43,7 @@ function PostIndex() {
   return (
     <>
       <header className="page-head">
-        <KineticTitle lines={['Writing']} />
+        <h1 className="page-title">Writing</h1>
         <p className="page-lede">Notes on reliability, operator tooling and how I scope work.</p>
         <p className="page-stats">
           <span>
@@ -179,10 +178,12 @@ export default function BlogView() {
       <SiteHeader />
 
       <main id="main-content" className="page-main">
-        <a className="page-back" href={slug ? '#/blog' : '#/'}>
-          <Icon name="arrowRight" size={13} className="page-back-icon" />
-          {slug ? 'All writing' : 'Portfolio'}
-        </a>
+        {slug && (
+          <a className="page-back" href="#/blog">
+            <Icon name="arrowRight" size={13} className="page-back-icon" />
+            All writing
+          </a>
+        )}
 
           <div key={slug ?? 'index'} className="route">
             {!slug ? (

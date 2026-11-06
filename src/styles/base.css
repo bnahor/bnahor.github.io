@@ -23,7 +23,7 @@
 
   --gutter: max(16px, env(safe-area-inset-left, 0px));
   --gutter-r: max(16px, env(safe-area-inset-right, 0px));
-  --bar: 52px;
+  --bar: 56px;
 }
 
 @media (min-width: 720px) {
@@ -69,7 +69,7 @@ canvas {
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 3.5rem;
   background: var(--ink);
 }
 

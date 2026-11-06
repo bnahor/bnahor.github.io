@@ -1,68 +1,83 @@
-/* The end reel: the rest of the homepage, set like film credits on black. */
+/* Everything after the stage: a plain document on the same sheet as the other pages. */
 .reel {
   position: relative;
   z-index: 4;
   padding: 0 var(--gutter-r) env(safe-area-inset-bottom, 0px) var(--gutter);
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--sheet);
+  color: var(--ink);
 }
 
+/* One layout for every section: heading in the margin, content beside it. */
 .reel-section {
-  width: 100%;
-  max-width: 68rem;
+  display: grid;
+  max-width: 76rem;
   margin: 0 auto;
-  padding-top: clamp(4rem, 9vh, 7rem);
-  scroll-margin-top: 1rem;
+  padding-top: clamp(3.5rem, 8vh, 6rem);
+  gap: 1.5rem 3rem;
 }
 
-.reel-section--opening {
-  padding-top: clamp(5rem, 14vh, 9rem);
-  /* Land flush with the black, past the html scroll-padding. */
-  scroll-margin-top: -5rem;
+.reel-section:first-child {
+  padding-top: clamp(5rem, 11vh, 7rem);
+  /* Land flush with the sheet, with no strip of stage above it. */
+  scroll-margin-top: -3.5rem;
 }
 
 .reel-title {
-  font: 200 clamp(2rem, 5vw, 3.5rem)/1.02 var(--display);
-  font-variation-settings: 'wdth' 112, 'wght' 200;
-  letter-spacing: -0.005em;
-  text-align: center;
-  text-wrap: balance;
+  font: 300 clamp(1.75rem, 3vw, 2.5rem)/1.1 var(--display);
+  letter-spacing: -0.02em;
 }
 
-.reel-title--credits {
-  font-size: clamp(2.75rem, 9vw, 7rem);
-  font-variation-settings: 'wdth' 125, 'wght' 200;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.reel-lede {
-  margin: 0.9rem auto 0;
-  max-width: 34rem;
-  color: var(--paper-soft);
-  text-align: center;
-  text-wrap: balance;
+@media (min-width: 900px) {
+  .reel-section {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    align-items: start;
+  }
 }
 
 .roll {
   display: grid;
-  gap: 1.75rem;
-  margin-top: clamp(2.25rem, 5vh, 3.5rem);
+  min-width: 0;
 }
 
-.roll--tight {
-  gap: 1rem;
+.roll > li {
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--ink-line);
+}
+
+.roll > li:last-child {
+  border-bottom: 1px solid var(--ink-line);
 }
 
 .credit--static,
 .credit summary {
   display: grid;
-  gap: 0 2rem;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 0.2rem 2rem;
   align-items: baseline;
 }
 
+@media (min-width: 720px) {
+  .credit--static,
+  .credit summary {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+
+  .credit-job {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: right;
+  }
+
+  .credit-name {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  }
+
 .credit summary {
+  position: relative;
+  min-height: 44px;
+  padding-right: 2rem;
   list-style: none;
   cursor: pointer;
 }
@@ -71,19 +86,28 @@
   display: none;
 }
 
+.credit summary::after {
+  position: absolute;
+  top: 0.2em;
+  right: 0;
+  content: '+';
+  font: 300 1.25rem/1 var(--body);
+}
+
+.credit[open] summary::after {
+  content: '–';
+}
+
 .credit-job {
   min-width: 0;
-  color: var(--paper-soft);
-  text-align: right;
-  text-wrap: balance;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
 }
 
 .credit-name {
-  position: relative;
   display: block;
   min-width: 0;
-  font: 500 clamp(1.25rem, 2.3vw, 1.75rem)/1.15 var(--display);
-  font-variation-settings: 'wdth' 112, 'wght' 500;
+  font: 500 1.25rem/1.2 var(--display);
 }
 
 .credit-line,
@@ -92,23 +116,17 @@
 .credit-links {
   display: block;
   font: 400 0.9375rem/1.45 var(--body);
-  font-variation-settings: normal;
 }
 
 .credit-line {
-  margin-top: 0.35rem;
-  color: var(--paper);
+  margin-top: 0.3rem;
   text-wrap: pretty;
 }
 
-.credit-meta {
-  margin-top: 0.2rem;
-  color: var(--paper-soft);
-}
-
+.credit-meta,
 .credit-tech {
-  margin-top: 0.2rem;
-  color: var(--paper-soft);
+  margin-top: 0.15rem;
+  color: var(--ink-soft);
 }
 
 .credit-links {
@@ -116,62 +134,31 @@
   gap: 1.25rem;
 }
 
-.credit-plain {
-  min-width: 0;
-  font-size: 1.0625rem;
-  text-wrap: pretty;
-}
-
-/* Open/close mark on the credit rows */
-.credit summary .credit-name::after {
-  position: absolute;
-  top: 0.1em;
-  right: 0;
-  color: var(--paper-soft);
-  content: '+';
-  font: 300 1.25rem/1 var(--data);
-}
-
-.credit[open] summary .credit-name::after {
-  content: '–';
-}
-
-.credit summary .credit-name {
-  padding-right: 2rem;
-}
-
-@media (hover: hover) {
-  .credit summary:hover .credit-name::after {
-    color: var(--spike);
-  }
-}
-
 .credit-body {
   display: grid;
-  gap: 1rem;
-  margin-top: 1.25rem;
-  margin-left: calc(40% + 0.8rem);
-  padding-bottom: 0.75rem;
-  animation: route-in 260ms ease-out both;
+  max-width: 44rem;
+  gap: 0.9rem;
+  margin-top: 1rem;
+  padding-bottom: 0.5rem;
+  animation: route-in 240ms ease-out both;
 }
 
 .credit-story {
-  font: 300 1.3125rem/1.32 var(--display);
-  font-variation-settings: 'wdth' 94, 'wght' 300;
+  font: 300 1.25rem/1.35 var(--display);
   text-wrap: pretty;
 }
 
 .credit-metrics {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem 1.25rem;
-  font: 400 0.6875rem/1.5 var(--data);
+  gap: 0.25rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
 }
 
 .credit-bullets {
   display: grid;
-  gap: 0.65rem;
-  color: var(--paper-soft);
+  gap: 0.6rem;
   line-height: 1.5;
 }
 
@@ -179,75 +166,18 @@
   text-wrap: pretty;
 }
 
-@media (max-width: 719px) {
-  .reel-title,
-  .reel-lede {
-    text-align: left;
-  }
-
-  .reel-lede {
-    margin-left: 0;
-  }
-
-  .credit--static,
-  .credit summary {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.25rem;
-  }
-
-  .credit-job {
-    font-size: 0.9375rem;
-    text-align: left;
-  }
-
-  .credit-body {
-    margin-left: 0;
-  }
-
-  .credit-story {
-    font-size: 1.1875rem;
-  }
-
-  .credit summary {
-    min-height: 44px;
-  }
-}
-
-/* Notes */
-.notes-grid {
-  display: grid;
-  gap: 3rem 4rem;
-  margin-top: clamp(2.25rem, 5vh, 3.5rem);
-}
-
-@media (min-width: 820px) {
-  .notes-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 .notes-column {
   display: grid;
   min-width: 0;
-  align-content: start;
   gap: 0.75rem;
 }
 
-.notes-column:only-child {
-  grid-column: 1 / -1;
-}
-
-.notes-head {
-  color: var(--paper-soft);
-  font: 400 0.6875rem/1.3 var(--data);
-}
-
 .notes-list li {
-  border-top: 1px solid var(--paper-line);
+  border-top: 1px solid var(--ink-line);
 }
 
 .notes-list li:last-child {
-  border-bottom: 1px solid var(--paper-line);
+  border-bottom: 1px solid var(--ink-line);
 }
 
 .notes-row {
@@ -257,85 +187,70 @@
 }
 
 .notes-title {
-  font: 400 1.125rem/1.25 var(--display);
-  font-variation-settings: 'wdth' 100, 'wght' 400;
-  transition: color 160ms ease;
+  font: 500 1.25rem/1.25 var(--display);
 }
 
 .notes-meta {
-  color: var(--paper-soft);
-  font-size: 0.875rem;
-}
-
-.notes-empty {
-  padding: 0.8rem 0;
-  color: var(--paper-soft);
-}
-
-.notes-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 1.5rem;
-}
-
-@media (hover: hover) {
-  .notes-row:hover .notes-title {
-    color: var(--spike);
-  }
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
 }
 
 /* Contact */
 .fin {
   display: grid;
-  max-width: 68rem;
+  max-width: 76rem;
   margin: 0 auto;
-  padding-top: clamp(6rem, 18vh, 11rem);
-  justify-items: center;
-  gap: 1.25rem;
-  text-align: center;
-  scroll-margin-top: 1rem;
+  padding-top: clamp(3.5rem, 8vh, 6rem);
+  gap: 1.5rem 3rem;
+}
+
+.fin .reel-title {
+  grid-row: span 3;
 }
 
 .fin-copy {
-  max-width: 34rem;
-  color: var(--paper-soft);
+  max-width: 38rem;
   text-wrap: pretty;
 }
 
 .fin-address {
   display: inline-flex;
+  width: fit-content;
   min-height: 44px;
   align-items: center;
-  font: 300 clamp(1.375rem, 5.4vw, 4rem)/1.1 var(--display);
-  font-variation-settings: 'wdth' 110, 'wght' 300;
+  font: 300 clamp(1.375rem, 4.4vw, 3.25rem)/1.1 var(--display);
+  letter-spacing: -0.02em;
   overflow-wrap: anywhere;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.16em;
 }
 
-@media (hover: hover) {
-  .fin-address:hover {
-    text-decoration-color: var(--spike);
-  }
-}
-
 .fin-links {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 0 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .fin {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    align-items: start;
+  }
+
+  .fin > :not(.reel-title) {
+    grid-column: 2;
+  }
 }
 
 .reel-footer {
   display: grid;
-  gap: 0.4rem;
-  max-width: 44rem;
+  max-width: 76rem;
   margin: 0 auto;
-  padding: clamp(5rem, 14vh, 8rem) 0 2rem;
-  color: var(--paper-soft);
+  padding: clamp(4rem, 10vh, 7rem) 0 1.5rem;
+  gap: 0.3rem;
+  color: var(--ink-soft);
   font-size: 0.8125rem;
-  text-align: center;
   text-wrap: pretty;
 }
 

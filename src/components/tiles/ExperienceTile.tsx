@@ -2,9 +2,8 @@ import { experience } from '../../data/experience';
 
 export function ExperienceTile() {
   return (
-    <section id="experience" className="reel-section reel-section--opening" aria-labelledby="experience-heading">
-      <h2 id="experience-heading" className="reel-title reel-title--credits">Credits</h2>
-      <p className="reel-lede">Experience, 2023 to 2026. Open any line for the detail.</p>
+    <section id="experience" className="reel-section" aria-labelledby="experience-heading">
+      <h2 id="experience-heading" className="reel-title">Experience</h2>
 
       <ul className="roll">
         {experience.map((item, index) => (

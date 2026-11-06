@@ -5,7 +5,6 @@ import { Stage } from './components/stage/Stage';
 import { EducationTile } from './components/tiles/EducationTile';
 import { ExperienceTile } from './components/tiles/ExperienceTile';
 import { HeroTile } from './components/tiles/HeroTile';
-import { LearnTile } from './components/tiles/LearnTile';
 import { ProjectsTile } from './components/tiles/ProjectsTile';
 import { ScenesTile } from './components/tiles/ScenesTile';
 import { SkillsTile } from './components/tiles/SkillsTile';
@@ -51,10 +50,11 @@ function useRoute(): Route {
 export default function App() {
   const route = useRoute();
   const onPage = route !== 'home';
-  const wasOnPage = useRef(onPage);
+  const wasOnPage = useRef(true);
 
-  // Returning from a page to a section anchor: the homepage mounts fresh, so
-  // the browser's default hash scroll has nothing to land on. Do it manually.
+  // Arriving at a section anchor, from a page or a direct link: the homepage
+  // mounts fresh, so the browser's default hash scroll has nothing to land on.
+  // Do it manually.
   useEffect(() => {
     if (wasOnPage.current && !onPage) {
       const id = window.location.hash.slice(1);
@@ -97,13 +97,7 @@ export default function App() {
               <ProjectsTile />
               <SkillsTile />
               <EducationTile />
-              <section className="reel-section" aria-labelledby="notes-heading">
-                <h2 id="notes-heading" className="reel-title">Notes</h2>
-                <div className="notes-grid">
-                  <WritingTile />
-                  <LearnTile />
-                </div>
-              </section>
+              <WritingTile />
               <ContactTile />
 
               <footer className="reel-footer">

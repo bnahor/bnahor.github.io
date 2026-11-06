@@ -17,10 +17,10 @@ export function ContactTile() {
 
   return (
     <section id="contact" className="fin" aria-labelledby="contact-heading">
-      <h2 id="contact-heading" className="reel-title">Next production</h2>
+      <h2 id="contact-heading" className="reel-title">Contact</h2>
       <p className="fin-copy">
-        I’m looking for my next role in backend, data platforms or robotics infrastructure, based
-        in Singapore. I’m just as happy to talk through a hard engineering problem.
+        I’m looking for my next role in backend, data platforms or robotics infrastructure, in San
+        Francisco, New York or Singapore. I’d consider elsewhere for the right company.
       </p>
       <a className="fin-address" href={`mailto:${profile.email}`}>
         {profile.email}
@@ -30,9 +30,6 @@ export function ContactTile() {
           {copied ? 'Copied' : 'Copy email'}
           {copied && <Icon name="check" size={14} />}
         </button>
-        <a className="text-link" href={profile.links.resume} target="_blank" rel="noreferrer">
-          Résumé
-        </a>
         <a className="text-link" href={profile.links.github} target="_blank" rel="noreferrer">
           GitHub
         </a>

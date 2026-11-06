@@ -9,7 +9,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { SiteHeader } from '../components/SiteHeader';
 import { Icon } from '../components/Icon';
-import { KineticTitle } from '../components/KineticTitle';
+import { ReadingHead } from './ReadingHead';
 import { fetchLibrary } from './api';
 import { LOCAL_LIBRARY, formatBytes, libraryHref } from './seekUrl';
 import type { LibraryItem, LibraryManifest } from './types';
@@ -88,12 +88,10 @@ function LibraryRow({ item }: { item: LibraryItem }) {
           </a>
         )}
 
-        {item.link ? (
+        {item.link && (
           <a className="lib-action" href={item.link} target="_blank" rel="noreferrer">
             {item.linkKind === 'free' ? 'Read free' : 'Publisher'}
           </a>
-        ) : (
-          <span className="lib-action lib-action--none">shelf only</span>
         )}
       </div>
     </article>
@@ -109,7 +107,7 @@ export default function LibraryView() {
   const [area, setArea] = useState('all');
 
   useEffect(() => {
-    document.title = 'Library — Rohan Bahl';
+    document.title = 'Reading — Rohan Bahl';
     let alive = true;
     fetchLibrary()
       .then((m) => alive && setManifest(m))
@@ -159,26 +157,20 @@ export default function LibraryView() {
       <SiteHeader />
 
       <main id="main-content" className="page-main">
-        <a className="page-back" href="#/">
-          <Icon name="arrowRight" size={13} className="page-back-icon" />
-          Portfolio
-        </a>
-
-        <header className="page-head">
-          <KineticTitle lines={['The Library']} />
-          <p className="page-lede">
-            Every book, paper and lecture deck I keep locally, and the queue the shelf draws from.
-            The files stay on my machine. Each row links to wherever the work is published.
-          </p>
-          {manifest && (
-            <p className="page-stats">
-              <span>{manifest.items.length} items</span>
-              <span>
-                {noted} with notes · {formatBytes(manifest.totalBytes)}
-              </span>
-            </p>
-          )}
-        </header>
+        <ReadingHead
+          current="library"
+          lede="Every book, paper and lecture deck I keep locally. The files stay on my machine, and rows link to the work where it's published."
+          stats={
+            manifest && (
+              <>
+                <span>{manifest.items.length} items</span>
+                <span>
+                  {noted} with notes, {formatBytes(manifest.totalBytes)}
+                </span>
+              </>
+            )
+          }
+        />
 
         <div className="shelf-controls">
           <div className="shelf-chips" role="group" aria-label="Filter by area">

@@ -23,8 +23,9 @@ export function WritingTile() {
   if (!blog || latest.length === 0) return null;
 
   return (
-    <div id="writing" className="notes-column">
-      <h3 className="notes-head">Writing</h3>
+    <section id="writing" className="reel-section" aria-labelledby="writing-heading">
+      <h2 id="writing-heading" className="reel-title">Writing</h2>
+      <div className="notes-column">
       <ul className="notes-list">
         {latest.map((post) => (
           <li key={post.slug}>
@@ -39,6 +40,7 @@ export function WritingTile() {
         All writing
         <Icon name="arrowRight" size={14} />
       </a>
-    </div>
+      </div>
+    </section>
   );
 }

@@ -2,21 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import type { StageApi } from './engine';
 import { prefersReducedMotion } from '../../lib/motion';
 
-const TAKE_LABELS = ['NEUTRAL', 'STRUT', 'ROBOT', 'ZOMBIE'];
+const TAKE_LABELS = ['Neutral', 'Strut', 'Robot', 'Zombie'];
+const HEADER = 56;
 
 /**
- * Everything fixed behind and around the homepage: the cyc wall, the canvas, the
- * bottom letterbox bar and the reticle. It reads the scenes from the DOM, so each
- * scene's story lives in markup (data-jitter, data-skeleton, data-state).
+ * The fixed backdrop of the homepage: the cyc wall, the canvas and the walk
+ * switcher. It reads the scenes from the DOM, so each scene's story lives in
+ * markup (data-jitter, data-skeleton).
  */
 export function Stage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const barRef = useRef<HTMLElement>(null);
-  const reticleRef = useRef<HTMLDivElement>(null);
-  const reticleLabelRef = useRef<HTMLSpanElement>(null);
-  const timecodeRef = useRef<HTMLSpanElement>(null);
-  const jitterRef = useRef<HTMLSpanElement>(null);
-  const stateRef = useRef<HTMLSpanElement>(null);
+  const takeRef = useRef<HTMLButtonElement>(null);
   const stageRef = useRef<StageApi | null>(null);
   const [take, setTake] = useState(0);
 
@@ -27,62 +23,44 @@ export function Stage() {
     const scenes = Array.from(document.querySelectorAll<HTMLElement>('[data-scene]'));
     const stageSections = document.getElementById('stage-sections');
     const reel = document.getElementById('end-reel');
-    const topBar = document.querySelector<HTMLElement>('.site-bar');
-    const bottomBar = barRef.current;
-
-    const stacked = () => window.innerWidth < window.innerHeight;
-    const barBase = () => {
-      const h = window.innerHeight;
-      if (stacked()) return 52;
-      return h < 500 ? 40 : Math.min(96, Math.max(52, h * 0.09));
-    };
 
     const update = () => {
       frame = 0;
       const W = window.innerWidth;
       const H = window.innerHeight;
-      const y = window.scrollY;
 
-      // The letterbox opens as the film starts.
-      const base = barBase();
-      const bar = stacked() ? base : Math.max(Math.min(46, base), base - y * 0.09);
-      if (topBar) topBar.style.height = `${bar}px`;
-      if (bottomBar) bottomBar.style.height = `${bar}px`;
-      bottomBar?.classList.toggle('is-away', (reel?.getBoundingClientRect().top ?? H) < H * 0.6);
+      takeRef.current?.classList.toggle('is-away', (reel?.getBoundingClientRect().top ?? H) < H * 0.9);
 
       const mid = H * 0.62;
       let active = scenes[0];
       for (const scene of scenes) {
         if (scene.getBoundingClientRect().top < mid) active = scene;
       }
-      if (!active) return;
-
-      if (stateRef.current) stateRef.current.textContent = active.dataset.state ?? 'RAW';
       const stage = stageRef.current;
-      if (!stage) return;
+      if (!active || !stage) return;
 
       stage.setScene({
-        jitter: Number(active.dataset.jitter ?? 0.6),
+        jitter: Number(active.dataset.jitter ?? 0.2),
         skeleton: Number(active.dataset.skeleton ?? 0),
       });
 
-      if (stacked()) {
+      if (W < H) {
         // The copy sits at the foot of the screen; the performer gets what's left above it.
         const copy = active.querySelector<HTMLElement>('[data-stage-text]');
         const copyHeight = copy?.getBoundingClientRect().height ?? H * 0.4;
-        const copyTop = H - bar - 22 - copyHeight;
-        const scale = Math.min((copyTop - bar - 18) / 2.07, W * 0.56);
+        const copyTop = H - 24 - copyHeight;
+        const scale = Math.min((copyTop - HEADER - 16) / 1.98, W * 0.56);
         stage.setFraming({
           x: W * 0.5,
-          floor: copyTop - 6 - scale * 0.22,
+          floor: copyTop - 10,
           scale: Math.max(scale, 40),
           visible: scale > 62,
         });
       } else {
-        const scale = Math.min((H - bar * 2 - 44) / 2.1, H * 0.38);
+        const scale = Math.min((H - HEADER - 56) / 1.9, H * 0.42);
         stage.setFraming({
           x: W * (active === scenes[0] ? 0.68 : 0.72),
-          floor: H - bar - 18 - scale * 0.22,
+          floor: H - 40,
           scale,
           visible: true,
         });
@@ -93,29 +71,13 @@ export function Stage() {
     };
 
     const onPointer = (event: PointerEvent) => {
-      const inReel = (reel?.getBoundingClientRect().top ?? 1e9) < event.clientY;
-      stageRef.current?.setLens(event.clientX, event.clientY, inReel ? 0.25 : 1);
-      if (event.pointerType !== 'mouse' || reduce) return;
-      document.documentElement.classList.add('has-reticle');
-      if (reticleRef.current) {
-        reticleRef.current.style.transform = `translate(${event.clientX}px, ${event.clientY}px)`;
-      }
-      if (reticleLabelRef.current) {
-        const target = event.target as Element | null;
-        reticleLabelRef.current.textContent = target?.closest?.('a, button, summary')
-          ? 'OPEN'
-          : inReel
-            ? ''
-            : 'SOLVE';
-      }
+      stageRef.current?.setLens(event.clientX, event.clientY);
     };
-    const onLeave = () => document.documentElement.classList.remove('has-reticle');
 
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
     window.addEventListener('pointermove', onPointer, { passive: true });
     window.addEventListener('pointerdown', onPointer, { passive: true });
-    document.documentElement.addEventListener('pointerleave', onLeave);
     update();
 
     let io: IntersectionObserver | null = null;
@@ -124,20 +86,14 @@ export function Stage() {
     void import('./engine').then(({ createStage }) => {
       const canvas = canvasRef.current;
       if (disposed || !canvas) return;
-      const stage = createStage(canvas, {
-        reduce,
-        onHud: ({ timecode, jitter }) => {
-          if (timecodeRef.current) timecodeRef.current.textContent = timecode;
-          if (jitterRef.current) jitterRef.current.textContent = jitter;
-        },
-      });
+      const stage = createStage(canvas, { reduce });
       if (!stage) return;
       stageRef.current = stage;
       canvas.classList.add('is-live');
       update();
       if (document.fonts?.ready) void document.fonts.ready.then(() => !disposed && update());
 
-      // Nothing to draw once the end credits fully cover the stage.
+      // Nothing to draw once the page has scrolled past the stage.
       io = new IntersectionObserver(([entry]) => {
         if (entry?.isIntersecting) stage.start();
         else stage.stop();
@@ -153,8 +109,6 @@ export function Stage() {
       window.removeEventListener('resize', schedule);
       window.removeEventListener('pointermove', onPointer);
       window.removeEventListener('pointerdown', onPointer);
-      document.documentElement.removeEventListener('pointerleave', onLeave);
-      document.documentElement.classList.remove('has-reticle');
       io?.disconnect();
       stageRef.current?.destroy();
       stageRef.current = null;
@@ -171,30 +125,13 @@ export function Stage() {
     <>
       <div className="cyc" aria-hidden="true" />
       <canvas ref={canvasRef} className="stage-canvas" aria-hidden="true" />
-
-      <aside ref={barRef} className="stage-bar">
-        <div className="stage-bar-group" aria-hidden="true">
-          <span ref={timecodeRef} className="stage-timecode">00:00:00:00</span>
-          <span className="stage-bar-wide">24 FPS</span>
-        </div>
-        <button type="button" className="take-button" onClick={nextTake}>
-          <span className="visually-hidden">Change the performer’s walk. Current take: </span>
-          TK {String(take + 1).padStart(2, '0')} {TAKE_LABELS[take]}
-          <span className="take-next" aria-hidden="true">NEXT</span>
-        </button>
-        <div className="stage-bar-group" aria-hidden="true">
-          <span className="stage-bar-wide">
-            JITTER <span ref={jitterRef}>00.0</span> PX
-          </span>
-          <span ref={stateRef} className="stage-state">RAW</span>
-        </div>
-      </aside>
-
-      <div ref={reticleRef} className="reticle" aria-hidden="true">
-        <i />
-        <i />
-        <span ref={reticleLabelRef}>SOLVE</span>
-      </div>
+      <button ref={takeRef} type="button" className="take-button" onClick={nextTake}>
+        <span className="visually-hidden">Change the figure’s walk. Current walk: </span>
+        {TAKE_LABELS[take]} walk
+        <span className="take-next" aria-hidden="true">
+          Next
+        </span>
+      </button>
     </>
   );
 }

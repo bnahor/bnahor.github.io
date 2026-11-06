@@ -3,13 +3,12 @@ import { JOINT_NAMES, TAKE_FPS, TAKES } from './takes';
 /**
  * The capture stage: a point-cloud performer playing back real motion on a
  * canvas. Away from the lens its markers show raw tracker noise; under the lens
- * they lock and the skeleton solve appears. Loose dust accretes around the
- * cursor. Everything is canvas 2D, and it renders nothing while off screen.
+ * they lock and the skeleton solve appears. Every point belongs to the
+ * body. Everything is canvas 2D, and it renders nothing while off screen.
  */
 
 export type Scene = { jitter: number; skeleton: number };
 export type Framing = { x: number; floor: number; scale: number; visible: boolean };
-export type Hud = { timecode: string; jitter: string };
 
 type Bone = { a: number; b: number; ra: number; rb: number; share: number; line: boolean; flat: number };
 
@@ -28,6 +27,7 @@ const bone = (
 const BONES: Bone[] = [
   bone('PELVIS', 'CHEST', 0.135, 0.165, 0.2, 0.68),
   bone('CHEST', 'NECK', 0.15, 0.055, 0.09, 0.68),
+  bone('NECK', 'HEAD', 0.052, 0.05, 0.022),
   bone('HEAD', 'HEAD', 0.108, 0.108, 0.1),
   bone('L_SHLD', 'R_SHLD', 0.055, 0.055, 0.035),
   bone('L_HIP', 'R_HIP', 0.075, 0.075, 0.03),
@@ -52,7 +52,6 @@ const ss = (a: number, b: number, x: number) => {
   const t = clamp((x - a) / (b - a));
   return t * t * (3 - 2 * t);
 };
-const pad = (n: number) => String(n).padStart(2, '0');
 
 function decodeTakes() {
   return TAKES.map((take) => {
@@ -64,11 +63,13 @@ function decodeTakes() {
   });
 }
 
-export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; onHud: (hud: Hud) => void }) {
+export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean }) {
   const context = canvas.getContext('2d');
   if (!context) return null;
   const ctx = context;
-  const { reduce, onHud } = opts;
+  const { reduce } = opts;
+  // With a mouse the lens is the cursor. On touch it patrols between taps.
+  const hasCursor = window.matchMedia('(hover: hover)').matches;
   const styles = getComputedStyle(canvas);
   const INK = styles.getPropertyValue('--ink').trim() || '#11110e';
   const SPIKE = styles.getPropertyValue('--spike').trim() || '#ff1f6b';
@@ -84,9 +85,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
   // Particles
   const smallScreen = Math.min(window.innerWidth, window.innerHeight) < 620;
   const N_BODY = smallScreen ? 1500 : 2800;
-  const N_DUST = smallScreen ? 240 : 620;
   let bodyCount = N_BODY;
-  let dustCount = N_DUST;
   const pBone = new Uint8Array(N_BODY);
   const pS = new Float32Array(N_BODY);
   const pC = new Float32Array(N_BODY);
@@ -130,11 +129,6 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
     }
   }
   const basis = new Float32Array(BONES.length * 6);
-  const dx = new Float32Array(N_DUST);
-  const dy = new Float32Array(N_DUST);
-  const dvx = new Float32Array(N_DUST);
-  const dvy = new Float32Array(N_DUST);
-  const da = new Float32Array(N_DUST);
 
   // View state
   let W = 0;
@@ -148,18 +142,16 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
   let S = 300;
   let alpha = 1;
   let framed = false;
-  let jitter = reduce ? 0.2 : 0.62;
+  let jitter = reduce ? 0.1 : 0.2;
   let jitterTo = jitter;
   let skel = 0;
   let skelTo = 0;
-  const lens = { x: 0, y: 0, tx: 0, ty: 0, last: -1e9 };
-  let pull = 0.4;
+  const lens = { x: -1e4, y: -1e4, tx: -1e4, ty: -1e4, last: -1e9 };
 
   let t = reduce ? 3.1 : 0;
   let raf = 0;
   let running = false;
   let lastNow = 0;
-  let lastHud = 0;
   let slowFrames = 0;
   let frameEma = 16;
 
@@ -170,16 +162,6 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
     canvas.width = Math.round(W * dpr);
     canvas.height = Math.round(H * dpr);
     lensR = Math.min(W, H) * (W < H ? 0.26 : 0.2);
-  }
-
-  function seedDust() {
-    for (let i = 0; i < N_DUST; i++) {
-      dx[i] = Math.random() * W;
-      dy[i] = Math.random() * H;
-      dvx[i] = (Math.random() - 0.5) * 6;
-      dvy[i] = (Math.random() - 0.5) * 6;
-      da[i] = Math.random() * Math.PI * 2;
-    }
   }
 
   function samplePose() {
@@ -256,9 +238,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
     jitter += (jitterTo - jitter) * 0.045;
     skel += (skelTo - skel) * 0.05;
 
-    // Lens: steered by the cursor, otherwise it patrols the performer.
-    const steering = now - lens.last < 1600;
-    if (steering) {
+    if (hasCursor || now - lens.last < 1600) {
       lens.x += (lens.tx - lens.x) * 0.16;
       lens.y += (lens.ty - lens.y) * 0.16;
     } else {
@@ -271,6 +251,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
     const ly = lens.y;
     const R = Math.min(lensR, S * 0.62);
     const mark = Math.min(3, S / 40);
+    const dent = R * 0.3;
 
     samplePose();
 
@@ -279,83 +260,29 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
     const cy = Math.cos(yaw);
     const sy = Math.sin(yaw);
 
-    // Capture volume: ring of cameras, contact shadow, tape mark.
+    // Contact shadow
     if (alpha > 0.01) {
-      const rx = Math.min(S * 1.02, W * 0.44);
-      const ry = S * 0.2;
+      const rx = Math.min(S * 0.8, W * 0.44);
+      const ry = S * 0.13;
       ctx.save();
       ctx.globalAlpha = alpha;
       ctx.translate(x, floor);
-      ctx.scale(1, ry / (rx * 0.5));
-      const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rx * 0.5);
-      g.addColorStop(0, 'rgba(17,17,14,.28)');
+      ctx.scale(1, ry / rx);
+      const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
+      g.addColorStop(0, 'rgba(17,17,14,.26)');
       g.addColorStop(1, 'rgba(17,17,14,0)');
       ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.arc(0, 0, rx * 0.5, 0, Math.PI * 2);
+      ctx.arc(0, 0, rx, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
-
-      ctx.strokeStyle = INK;
-      ctx.lineWidth = 1;
-      ctx.globalAlpha = 0.34 * alpha;
-      ctx.beginPath();
-      ctx.ellipse(x, floor, rx, ry, 0, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      for (let i = 0; i < 12; i++) {
-        const a = (i / 12) * Math.PI * 2;
-        ctx.moveTo(x + Math.cos(a) * rx, floor + Math.sin(a) * ry);
-        ctx.lineTo(x + Math.cos(a) * (rx + 9), floor + Math.sin(a) * (ry + 2.2));
-      }
-      ctx.stroke();
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = SPIKE;
-      ctx.fillRect(x - S * 0.11, floor + ry * 0.74, S * 0.22, 3);
-      ctx.fillRect(x - 1.5, floor + ry * 0.74, 3, S * 0.05);
-      ctx.globalAlpha = 1;
     }
-
-    // Dust
-    ctx.fillStyle = INK;
-    ctx.globalAlpha = 0.5;
-    ctx.beginPath();
-    const reach = lensR * 1.9;
-    const gravity = steering ? pull : 0.4;
-    for (let i = 0; i < dustCount; i++) {
-      if (!reduce) {
-        const ox = lx - dx[i]!;
-        const oy = ly - dy[i]!;
-        const d = Math.hypot(ox, oy) || 1;
-        const f = (1 - ss(0, reach, d)) * gravity * 0.34;
-        // Radial pull plus a tangential push, so grains orbit into a disc.
-        dvx[i] = dvx[i]! + (ox / d) * f - (oy / d) * f * 1.5 + Math.cos(da[i]!) * 0.012;
-        dvy[i] = dvy[i]! + (oy / d) * f + (ox / d) * f * 1.5 + Math.sin(da[i]!) * 0.012;
-        da[i] = da[i]! + 0.01;
-        if (d < lensR * 0.32) {
-          dvx[i] = dvx[i]! - (ox / d) * 0.7;
-          dvy[i] = dvy[i]! - (oy / d) * 0.7;
-        }
-        dvx[i] = dvx[i]! * 0.955;
-        dvy[i] = dvy[i]! * 0.955;
-        dx[i] = dx[i]! + dvx[i]!;
-        dy[i] = dy[i]! + dvy[i]!;
-        if (dx[i]! < -8) dx[i] = W + 8;
-        else if (dx[i]! > W + 8) dx[i] = -8;
-        if (dy[i]! < -8) dy[i] = H + 8;
-        else if (dy[i]! > H + 8) dy[i] = -8;
-      }
-      ctx.rect(dx[i]!, dy[i]!, 1.3, 1.3);
-    }
-    ctx.fill();
-    ctx.globalAlpha = 1;
 
     if (alpha > 0.01) {
       computeBasis();
 
       // Markers
       const amp = S * 0.1;
-      const swapWindow = Math.floor(t * 7);
       const noisy = new Path2D();
       const clean = new Path2D();
       for (let i = 0; i < bodyCount; i++) {
@@ -373,7 +300,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
         const p = 1 / (1 - Z * 0.16);
         let px = x + X * S * p;
         let py = floor - wy * S * p + Z * S * 0.09;
-        const l = 1 - ss(R * 0.42, R, Math.hypot(px - lx, py - ly));
+        const toLens = Math.hypot(px - lx, py - ly);
+        const l = 1 - ss(R * 0.42, R, toLens);
         const A = jitter * (1 - l);
         if (A > 0.01) {
           const q = amp * A;
@@ -381,12 +309,13 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
           const fr = pF[i]!;
           px += q * Math.sin(t * fr + ph) * Math.sin(t * 3.1 + ph * 3);
           py += q * Math.sin(t * fr * 1.27 + ph * 2) * Math.cos(t * 2.3 + ph);
-          // Marker swap: a point jumps away for a few frames, as bad tracking does.
-          const h = Math.sin((i + 1) * 12.9898 + swapWindow * 78.233) * 43758.5453;
-          if (h - Math.floor(h) < 0.012 * A) {
-            px += (ph - 3.14) * amp * 1.3;
-            py += (fr - 28) * amp * 0.1;
-          }
+        }
+        // The cursor parts the markers it touches.
+        if (toLens < dent && toLens > 0.01) {
+          const u = 1 - toLens / dent;
+          const shove = (u * u * dent * 0.4) / toLens;
+          px += (px - lx) * shove;
+          py += (py - ly) * shove;
         }
         (A > 0.12 ? noisy : clean).rect(px, py, 1.7, 1.7);
       }
@@ -441,14 +370,6 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
       ctx.globalAlpha = 1;
     }
 
-    if (now - lastHud > 90) {
-      lastHud = now;
-      const fr = Math.floor(t * 24);
-      onHud({
-        timecode: `${pad(Math.floor(fr / 86400))}:${pad(Math.floor(fr / 1440) % 60)}:${pad(Math.floor(fr / 24) % 60)}:${pad(fr % 24)}`,
-        jitter: (jitter * S * 0.06).toFixed(1).padStart(4, '0'),
-      });
-    }
   }
 
   /** Thin the crowd rather than drop frames: phones vary far more than desktops. */
@@ -457,7 +378,6 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
     slowFrames = frameEma > 24 ? slowFrames + 1 : 0;
     if (slowFrames > 50 && bodyCount > 700) {
       bodyCount = Math.round(bodyCount * 0.75);
-      dustCount = Math.round(dustCount * 0.7);
       if (dprCap > 1) {
         dprCap = Math.max(1, dprCap - 0.5);
         resize();
@@ -520,7 +440,6 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
   ro.observe(canvas);
 
   resize();
-  seedDust();
   samplePose();
 
   return {
@@ -542,17 +461,18 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
         floor = target.floor;
         S = target.scale;
         alpha = target.visible ? 1 : 0;
-        lens.x = x;
-        lens.y = floor - S * 1.5;
+        if (!hasCursor) {
+          lens.x = x;
+          lens.y = floor - S * 1.5;
+        }
         framed = true;
         requestDraw();
       }
     },
-    setLens(px: number, py: number, gravity: number) {
+    setLens(px: number, py: number) {
       lens.tx = px;
       lens.ty = py;
       lens.last = performance.now();
-      pull = gravity;
       if (reduce) {
         lens.x = px;
         lens.y = py;
@@ -566,7 +486,6 @@ export function createStage(canvas: HTMLCanvasElement, opts: { reduce: boolean; 
       phase = (phase / take.frames) * next.frames;
       take = next;
       blend = reduce ? 1 : 0;
-      jitter = Math.max(jitter, 0.55);
       if (reduce) {
         samplePose();
         requestDraw();

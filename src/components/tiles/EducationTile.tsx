@@ -3,7 +3,7 @@ import { education } from '../../data/education';
 export function EducationTile() {
   return (
     <section id="about" className="reel-section" aria-labelledby="education-heading">
-      <h2 id="education-heading" className="reel-title">Trained at</h2>
+      <h2 id="education-heading" className="reel-title">Education</h2>
       <ul className="roll">
         {education.map((item) => (
           <li key={item.school} className="credit credit--static">

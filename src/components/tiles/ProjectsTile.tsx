@@ -4,10 +4,7 @@ import { Icon } from '../Icon';
 export function ProjectsTile() {
   return (
     <section id="projects" className="reel-section" aria-labelledby="projects-heading">
-      <h2 id="projects-heading" className="reel-title">Also credited on</h2>
-      <p className="reel-lede">
-        Projects outside work. Four hackathon builds, three of which made the finals or won a prize.
-      </p>
+      <h2 id="projects-heading" className="reel-title">Projects</h2>
 
       <ul className="roll">
         {projects.map((project) => (

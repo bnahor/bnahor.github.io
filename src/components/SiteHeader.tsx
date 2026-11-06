@@ -2,25 +2,48 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Icon } from './Icon';
 import { profile } from '../data/profile';
 
-const blogItem = { label: 'Blog', href: '#/blog' };
+const writingItem = { label: 'Writing', href: '#/blog' };
 
 const navItems = [
   { label: 'Experience', href: '#experience' },
   { label: 'Projects', href: '#projects' },
-  blogItem,
-  { label: 'Shelf', href: '#/shelf' },
-  { label: 'Library', href: '#/library' },
-  { label: 'About', href: '#about' },
+  writingItem,
+  { label: 'Reading', href: '#/shelf' },
   { label: 'Contact', href: '#contact' },
 ];
+
+/** The page's own title carries the name at the top of the homepage. */
+function useHeaderState() {
+  const [onStage, setOnStage] = useState(false);
+  const [nameInView, setNameInView] = useState(false);
+
+  useEffect(() => {
+    const title = document.getElementById('hero-heading');
+    if (!title) return;
+    const io = new IntersectionObserver(([entry]) => setNameInView(entry?.isIntersecting ?? false), {
+      rootMargin: '-56px 0px 0px 0px',
+    });
+    io.observe(title);
+    const onScroll = () => setOnStage(window.scrollY < 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      io.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
+
+  return { onStage, nameInView };
+}
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
   const [hasPosts, setHasPosts] = useState(false);
+  const { onStage, nameInView } = useHeaderState();
 
-  // The Blog link appears by itself once a post is published.
+  // The Writing link appears by itself once a post is published.
   useEffect(() => {
     let alive = true;
     import('../blog/posts').then((mod) => alive && setHasPosts(mod.posts.length > 0));
@@ -29,7 +52,7 @@ export function SiteHeader() {
     };
   }, []);
 
-  const items = navItems.filter((item) => hasPosts || item !== blogItem);
+  const items = navItems.filter((item) => hasPosts || item !== writingItem);
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false);
@@ -61,9 +84,9 @@ export function SiteHeader() {
 
       if (event.key !== 'Tab') return;
 
-      const items = [...focusables(), toggleRef.current].filter(Boolean) as HTMLElement[];
-      const first = items[0];
-      const last = items[items.length - 1];
+      const tabbable = [...focusables(), toggleRef.current].filter(Boolean) as HTMLElement[];
+      const first = tabbable[0];
+      const last = tabbable[tabbable.length - 1];
       if (!first || !last) return;
 
       const active = document.activeElement;
@@ -86,9 +109,13 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="site-bar">
-        <a className="wordmark" href="#top" aria-label="Rohan Bahl, back to top">
-          Rohan Bahl
+      <header className={`site-bar${onStage && !menuOpen ? ' is-clear' : ''}`}>
+        <a
+          className={`wordmark${nameInView && !menuOpen ? ' is-hidden' : ''}`}
+          href="#top"
+          aria-label="Rohan Bahl, back to top"
+        >
+          {profile.name}
         </a>
 
         <nav className="site-nav" aria-label="Primary">
@@ -97,11 +124,10 @@ export function SiteHeader() {
               {item.label}
             </a>
           ))}
+          <a className="nav-link nav-link--resume" href={profile.links.resume} target="_blank" rel="noreferrer">
+            Résumé
+          </a>
         </nav>
-
-        <a className="header-resume" href={profile.links.resume} target="_blank" rel="noreferrer">
-          Résumé
-        </a>
 
         <button
           ref={toggleRef}
@@ -132,23 +158,18 @@ export function SiteHeader() {
                 </a>
               </li>
             ))}
+            <li>
+              <a
+                className="mobile-nav-link"
+                href={profile.links.resume}
+                target="_blank"
+                rel="noreferrer"
+                onClick={closeMenu}
+              >
+                Résumé
+              </a>
+            </li>
           </ul>
-
-          <div className="mobile-nav-foot">
-            <a
-              className="mobile-nav-resume"
-              href={profile.links.resume}
-              target="_blank"
-              rel="noreferrer"
-              onClick={closeMenu}
-            >
-              Résumé
-              <Icon name="arrowRight" size={15} />
-            </a>
-            <a className="mobile-nav-email" href={`mailto:${profile.email}`} onClick={closeMenu}>
-              {profile.email}
-            </a>
-          </div>
         </nav>
       )}
     </>

@@ -9,7 +9,7 @@ export const profile = {
   previously: 'Founding Engineer · Cortex AI',
   location: 'Singapore',
   logline:
-    'Backend and robotics systems engineer. I built the capture stack behind large-scale human-motion datasets as a founding engineer at Cortex AI. Open to new roles.',
+    'Backend and robotics systems engineer. I built the capture stack behind large-scale human-motion datasets as a founding engineer at Cortex AI. Open to roles in San Francisco, New York and Singapore.',
   email: 'bnahor.dev@gmail.com',
   links: {
     github: 'https://github.com/bnahor',

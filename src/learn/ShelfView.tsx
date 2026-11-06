@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { SiteHeader } from '../components/SiteHeader';
 import { Icon } from '../components/Icon';
-import { KineticTitle } from '../components/KineticTitle';
+import { ReadingHead } from './ReadingHead';
 import { fetchEntry, fetchManifest } from './api';
 import { LOCAL_LIBRARY, buildSeekUrl, formatSeconds, libraryHref, pageHref } from './seekUrl';
 import { NoteLines } from './markdown';
@@ -162,7 +162,7 @@ export default function ShelfView() {
   const [status, setStatus] = useState<StatusFilter>('all');
 
   useEffect(() => {
-    document.title = 'Shelf — Rohan Bahl';
+    document.title = 'Reading — Rohan Bahl';
     let alive = true;
     fetchManifest()
       .then((m) => alive && setEntries(m.entries))
@@ -193,27 +193,21 @@ export default function ShelfView() {
       <SiteHeader />
 
       <main id="main-content" className="page-main">
-        <a className="page-back" href="#/">
-          <Icon name="arrowRight" size={13} className="page-back-icon" />
-          Portfolio
-        </a>
-
-        <header className="page-head">
-          <KineticTitle lines={['The Shelf']} />
-          <p className="page-lede">
-            Everything I&apos;m reading and watching, with notes anchored to the source.
-            Timestamps seek into the video, and page markers point back into the book.
-          </p>
-          {entries && (
-            <p className="page-stats">
-              <span>{entries.length} entries</span>
-              <span>
-                {entries.filter((e) => e.status === 'active').length} active ·{' '}
-                {entries.filter((e) => e.status === 'queued').length} queued
-              </span>
-            </p>
-          )}
-        </header>
+        <ReadingHead
+          current="shelf"
+          lede="What I'm reading and watching now, with notes anchored to the source. Timestamps seek into the video, and page markers point back into the book."
+          stats={
+            entries && (
+              <>
+                <span>{entries.length} entries</span>
+                <span>
+                  {entries.filter((e) => e.status === 'active').length} active,{' '}
+                  {entries.filter((e) => e.status === 'queued').length} queued
+                </span>
+              </>
+            )
+          }
+        />
 
         <div className="shelf-controls">
           <div className="shelf-chips" role="group" aria-label="Filter by status">
