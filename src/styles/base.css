@@ -1,23 +1,36 @@
+/* A grey studio cyc, ink type, one colour of spike tape. Colour is for marks on
+   the stage and live state, never for decoration. */
 :root {
-  color-scheme: dark;
-  font-family: 'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+  color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --black: #050505;
-  --panel: #0a0a0b;
-  /* Two-colour palette. Everything reads off warm off-white for body copy and
-     cool ghost white for emphasis; with no hue to lean on, hierarchy is carried
-     by weight, scale and opacity instead. */
-  --paper: #efefe8;
-  --ghost: #f8f8ff;
-  --ghost-dim: rgba(248, 248, 255, 0.1);
-  --text: #efefe8;
-  --soft: rgba(239, 239, 232, 0.68);
-  --faint: rgba(239, 239, 232, 0.45);
-  --line: rgba(248, 248, 255, 0.13);
-  --line-hot: rgba(248, 248, 255, 0.38);
-  --display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-  --mono: 'IBM Plex Mono', monospace;
+
+  --cyc-hi: #c6c5bd;
+  --cyc: #a8a79f;
+  --cyc-lo: #84837b;
+  --sheet: #e4e3db;
+  --ink: #11110e;
+  --ink-soft: rgba(17, 17, 14, 0.66);
+  --ink-line: rgba(17, 17, 14, 0.22);
+  --paper: #e8e7df;
+  --paper-soft: #a3a299;
+  --paper-line: rgba(232, 231, 223, 0.2);
+  --spike: #ff1f6b;
+
+  --display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --body: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --data: 'Martian Mono', ui-monospace, Menlo, monospace;
+
+  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  --bar: 52px;
+}
+
+@media (min-width: 720px) {
+  :root {
+    --gutter: max(28px, env(safe-area-inset-left, 0px));
+    --gutter-r: max(28px, env(safe-area-inset-right, 0px));
+  }
 }
 
 *,
@@ -34,8 +47,16 @@ h5,
 h6,
 p,
 figure,
-blockquote {
+blockquote,
+ul,
+ol {
   margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
 }
 
 img,
@@ -48,28 +69,19 @@ canvas {
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 7rem;
-  background: var(--black);
+  scroll-padding-top: 5rem;
+  background: var(--ink);
 }
 
 body {
   min-width: 320px;
   margin: 0;
   overflow-x: hidden;
-  background: var(--black);
-  color: var(--text);
+  background: var(--cyc);
+  color: var(--ink);
+  font: 400 1rem/1.5 var(--body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-body::before {
-  position: fixed;
-  z-index: 100;
-  inset: 0;
-  opacity: 0.045;
-  pointer-events: none;
-  content: '';
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
 }
 
 a {
@@ -78,7 +90,12 @@ a {
 }
 
 button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
   font: inherit;
+  cursor: pointer;
 }
 
 button,
@@ -88,54 +105,90 @@ summary {
 }
 
 ::selection {
-  background: var(--ghost);
-  color: var(--black);
+  background: var(--spike);
+  color: var(--ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--ghost);
-  outline-offset: 4px;
+  outline: 2px solid var(--spike);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .skip-link {
   position: fixed;
-  z-index: 200;
-  top: 0.75rem;
-  left: 0.75rem;
+  z-index: 60;
+  top: 0.5rem;
+  left: 0.5rem;
   padding: 0.75rem 1rem;
-  background: var(--ghost);
-  color: var(--black);
-  font: 500 0.78rem/1 var(--mono);
-  transform: translateY(-180%);
-  transition: transform 160ms ease;
+  background: var(--paper);
+  color: var(--ink);
+  font: 500 0.75rem/1 var(--data);
+  transform: translateY(-200%);
 }
 
 .skip-link:focus {
-  transform: translateY(0);
+  transform: none;
 }
 
-.site-shell {
-  position: relative;
-  min-height: 100vh;
-  isolation: isolate;
+.route {
+  animation: route-in 420ms ease-out both;
 }
 
-.time-grid {
-  position: fixed;
-  z-index: -1;
-  inset: 0;
-  opacity: 0.5;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(248, 248, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(248, 248, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(rgba(248, 248, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(248, 248, 255, 0.015) 1px, transparent 1px);
-  background-size:
-    96px 96px,
-    96px 96px,
-    24px 24px,
-    24px 24px;
-  mask-image: linear-gradient(to bottom, black 0, black 70%, transparent 100%);
+@keyframes route-in {
+  from {
+    opacity: 0;
+  }
 }
 
+/* A row of words that act as a link. 44px tall, so it's a real tap target. */
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-height: 44px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.28em;
+}
+
+.text-link svg {
+  transition: transform 180ms ease;
+}
+
+.text-link--strong {
+  font-weight: 700;
+}
+
+@media (hover: hover) {
+  .text-link:hover {
+    text-decoration-color: var(--spike);
+    text-decoration-thickness: 3px;
+  }
+
+  .text-link:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

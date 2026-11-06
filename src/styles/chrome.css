@@ -1,0 +1,159 @@
+/* The top letterbox bar and the phone menu, shared by every page. */
+.site-bar {
+  position: sticky;
+  z-index: 40;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: calc(var(--bar) + env(safe-area-inset-top, 0px));
+  padding: env(safe-area-inset-top, 0px) var(--gutter-r) 0 var(--gutter);
+  background: var(--ink);
+  color: var(--paper);
+  font: 400 0.6875rem/1 var(--data);
+  white-space: nowrap;
+}
+
+.home .site-bar {
+  position: fixed;
+  right: 0;
+  left: 0;
+  height: var(--bar);
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65em;
+  min-height: 44px;
+  text-transform: uppercase;
+}
+
+.wordmark::before {
+  width: 7px;
+  height: 7px;
+  background: var(--spike);
+  content: '';
+}
+
+.site-nav {
+  display: none;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.7rem;
+}
+
+.header-resume {
+  display: none;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0 0 0.7rem;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+.menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -11px;
+}
+
+@media (min-width: 900px) {
+  .site-nav,
+  .header-resume {
+    display: inline-flex;
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+}
+
+@media (hover: hover) {
+  .nav-link:hover,
+  .header-resume:hover,
+  .wordmark:hover {
+    color: var(--spike);
+  }
+}
+
+.mobile-nav {
+  position: fixed;
+  z-index: 35;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: calc(var(--bar) + env(safe-area-inset-top, 0px) + 1.5rem) var(--gutter-r)
+    calc(1.5rem + env(safe-area-inset-bottom, 0px)) var(--gutter);
+  overflow-y: auto;
+  background: var(--ink);
+  color: var(--paper);
+  animation: route-in 180ms ease-out both;
+}
+
+.mobile-nav:focus {
+  outline: none;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  border-bottom: 1px solid var(--paper-line);
+  font: 300 clamp(1.75rem, 8vw, 2.5rem)/1.1 var(--display);
+  font-variation-settings: 'wdth' 112, 'wght' 300;
+}
+
+.mobile-nav-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+}
+
+.mobile-nav-resume,
+.mobile-nav-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 44px;
+  overflow-wrap: anywhere;
+}
+
+/* Heading type shared by the hero and the page titles. */
+.kinetic-title {
+  font-family: var(--display);
+  font-size: min(12vw, 21vh);
+  font-variation-settings: 'wdth' 100, 'wght' 200;
+  font-weight: 200;
+  letter-spacing: -0.02em;
+  line-height: 0.86;
+  text-transform: uppercase;
+}
+
+.kt-line {
+  display: block;
+}
+
+.kt-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.kt-ch {
+  display: inline-block;
+  font-variation-settings: inherit;
+}

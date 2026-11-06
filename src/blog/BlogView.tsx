@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AnimatePresence, m } from 'framer-motion';
 import { SiteHeader } from '../components/SiteHeader';
 import { Icon } from '../components/Icon';
-import { EASE_OUT } from '../components/motion/ease';
+import { KineticTitle } from '../components/KineticTitle';
 import { SITE_TITLE } from '../data/profile';
 import { formatPostDate, postTags, posts, type Post } from './posts';
 import { Prose } from './Prose';
@@ -44,15 +43,10 @@ function PostIndex() {
 
   return (
     <>
-      <header className="shelf-heading blog-heading">
-        <div>
-          <h1 className="section-title section-title--compact">Writing</h1>
-          <p className="section-description">
-            Notes on reliability, operator tooling, and shipping systems that have to work
-            on the bad day.
-          </p>
-        </div>
-        <p className="shelf-stats">
+      <header className="page-head">
+        <KineticTitle lines={['Writing']} />
+        <p className="page-lede">Notes on reliability, operator tooling and how I scope work.</p>
+        <p className="page-stats">
           <span>
             {posts.length} post{posts.length === 1 ? '' : 's'}
           </span>
@@ -88,20 +82,13 @@ function PostIndex() {
       )}
 
       {posts.length === 0 ? (
-        <p className="shelf-fallback">Nothing published yet.</p>
+        <p className="page-note">Nothing published yet.</p>
       ) : filtered.length === 0 ? (
-        <p className="shelf-fallback">Nothing matches that filter.</p>
+        <p className="page-note">Nothing matches that filter.</p>
       ) : (
         <ol className="post-list">
-          <AnimatePresence initial={false}>
-            {filtered.map((post, index) => (
-              <m.li
-                key={post.slug}
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5, ease: EASE_OUT, delay: index * 0.05 }}
-              >
+            {filtered.map((post) => (
+              <li key={post.slug}>
                 <a className="post-row" href={`#/blog/${post.slug}`}>
                   <span className="post-row-date">{formatPostDate(post.date)}</span>
                   <span className="post-row-main">
@@ -115,11 +102,9 @@ function PostIndex() {
                     <span>{post.tags.join(' · ')}</span>
                     <span>{post.readingMinutes} min</span>
                   </span>
-                  <Icon name="arrowRight" size={16} className="post-row-arrow" />
-                </a>
-              </m.li>
+                                  </a>
+              </li>
             ))}
-          </AnimatePresence>
         </ol>
       )}
     </>
@@ -135,12 +120,7 @@ function PostPage({ post }: { post: Post }) {
 
   return (
     <article className="post">
-      <m.header
-        className="post-header"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: EASE_OUT }}
-      >
+      <header className="post-header">
         <p className="post-meta">
           <time dateTime={post.date}>{formatPostDate(post.date, 'long')}</time>
           <span>{post.readingMinutes} min read</span>
@@ -155,15 +135,9 @@ function PostPage({ post }: { post: Post }) {
             ))}
           </p>
         )}
-      </m.header>
+      </header>
 
-      <m.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: EASE_OUT, delay: 0.15 }}
-      >
-        <Prose source={post.body} />
-      </m.div>
+      <Prose source={post.body} />
 
       {(newer || older) && (
         <nav className="post-pager" aria-label="More posts">
@@ -201,30 +175,22 @@ export default function BlogView() {
   useEffect(() => () => void (document.title = SITE_TITLE), []);
 
   return (
-    <div className="site-shell">
-      <div className="time-grid" aria-hidden="true" />
+    <div className="page">
       <SiteHeader />
 
-      <main id="main-content" className="site-main shelf-main">
-        <a className="shelf-back" href={slug ? '#/blog' : '#/'}>
-          <Icon name="arrowRight" size={13} className="shelf-back-icon" />
+      <main id="main-content" className="page-main">
+        <a className="page-back" href={slug ? '#/blog' : '#/'}>
+          <Icon name="arrowRight" size={13} className="page-back-icon" />
           {slug ? 'All writing' : 'Portfolio'}
         </a>
 
-        <AnimatePresence mode="wait" initial={false}>
-          <m.div
-            key={slug ?? 'index'}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
+          <div key={slug ?? 'index'} className="route">
             {!slug ? (
               <PostIndex />
             ) : post ? (
               <PostPage post={post} />
             ) : (
-              <p className="shelf-fallback">
+              <p className="page-note">
                 That post doesn&apos;t exist — it may have been renamed.{' '}
                 <a className="ln" href="#/blog">
                   See all writing
@@ -232,11 +198,10 @@ export default function BlogView() {
                 .
               </p>
             )}
-          </m.div>
-        </AnimatePresence>
+          </div>
       </main>
 
-      <footer className="site-footer">
+      <footer className="page-footer">
         <p>© {new Date().getFullYear()} Rohan Bahl</p>
         <p>Written in markdown. Compiled with the site.</p>
       </footer>

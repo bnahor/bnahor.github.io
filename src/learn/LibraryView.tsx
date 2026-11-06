@@ -9,6 +9,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { SiteHeader } from '../components/SiteHeader';
 import { Icon } from '../components/Icon';
+import { KineticTitle } from '../components/KineticTitle';
 import { fetchLibrary } from './api';
 import { LOCAL_LIBRARY, formatBytes, libraryHref } from './seekUrl';
 import type { LibraryItem, LibraryManifest } from './types';
@@ -67,10 +68,13 @@ function LibraryRow({ item }: { item: LibraryItem }) {
             Noted
           </a>
         ) : (
-          <button type="button" className="lib-action" onClick={copy} title={command}>
-            {copied ? 'Copied' : 'Start notes'}
-            <Icon name={copied ? 'check' : 'clipboard'} size={12} />
-          </button>
+          // Only useful on the machine that holds the vault.
+          LOCAL_LIBRARY && (
+            <button type="button" className="lib-action" onClick={copy} title={command}>
+              {copied ? 'Copied' : 'Start notes'}
+              <Icon name={copied ? 'check' : 'clipboard'} size={12} />
+            </button>
+          )
         )}
 
         {LOCAL_LIBRARY && (
@@ -151,27 +155,23 @@ export default function LibraryView() {
   const noted = manifest?.items.filter((i) => i.noteId).length ?? 0;
 
   return (
-    <div className="site-shell">
-      <div className="time-grid" aria-hidden="true" />
+    <div className="page">
       <SiteHeader />
 
-      <main id="main-content" className="site-main shelf-main">
-        <a className="shelf-back" href="#/">
-          <Icon name="arrowRight" size={13} className="shelf-back-icon" />
+      <main id="main-content" className="page-main">
+        <a className="page-back" href="#/">
+          <Icon name="arrowRight" size={13} className="page-back-icon" />
           Portfolio
         </a>
 
-        <header className="shelf-heading">
-          <div>
-            <h1 className="section-title section-title--compact">The Library</h1>
-            <p className="section-description">
-              Every book, paper and lecture deck I keep locally — the queue the shelf draws
-              from. This is a catalogue, not a mirror: the files stay on my machine, and each
-              row links to wherever the work is actually published.
-            </p>
-          </div>
+        <header className="page-head">
+          <KineticTitle lines={['The Library']} />
+          <p className="page-lede">
+            Every book, paper and lecture deck I keep locally, and the queue the shelf draws from.
+            The files stay on my machine. Each row links to wherever the work is published.
+          </p>
           {manifest && (
-            <p className="shelf-stats">
+            <p className="page-stats">
               <span>{manifest.items.length} items</span>
               <span>
                 {noted} with notes · {formatBytes(manifest.totalBytes)}
@@ -206,13 +206,13 @@ export default function LibraryView() {
         </div>
 
         {failed ? (
-          <p className="shelf-fallback">
+          <p className="page-note">
             The catalogue didn&apos;t load — it may not have been compiled for this deploy.
           </p>
         ) : !manifest ? (
-          <p className="shelf-fallback">Loading the catalogue…</p>
+          <p className="page-note">Loading the catalogue…</p>
         ) : groups.length === 0 ? (
-          <p className="shelf-fallback">Nothing matches that filter.</p>
+          <p className="page-note">Nothing matches that filter.</p>
         ) : (
           <div className="lib-groups">
             {groups.map(([key, items]) => {
@@ -239,7 +239,7 @@ export default function LibraryView() {
         )}
       </main>
 
-      <footer className="site-footer">
+      <footer className="page-footer">
         <p>© {new Date().getFullYear()} Rohan Bahl</p>
         <p>
           {LOCAL_LIBRARY

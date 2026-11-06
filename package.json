@@ -11,12 +11,12 @@
     "learn:publish": "node scripts/publish-shelf.mjs",
     "learn:live": "node scripts/publish-shelf.mjs --watch",
     "new": "node scripts/new-note.mjs",
+    "motion:build": "node scripts/build-motion.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
     "preview": "vite preview"
   },
   "dependencies": {
-    "framer-motion": "^12.23.12",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },

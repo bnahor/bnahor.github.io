@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import { m } from 'framer-motion';
 import { Icon } from '../Icon';
-import { EASE_OUT } from '../motion/ease';
 
 type PostsModule = typeof import('../../blog/posts');
 
@@ -25,44 +23,22 @@ export function WritingTile() {
   if (!blog || latest.length === 0) return null;
 
   return (
-    <m.section
-      id="writing"
-      className="learn-rail"
-      aria-labelledby="writing-heading"
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.8, ease: EASE_OUT }}
-    >
-      <div className="learn-rail-intro">
-        <h2 id="writing-heading">Writing</h2>
-        <p>Longer notes on reliability, operator tooling, and how I scope work.</p>
-        <a className="learn-rail-link" href="#/blog">
-          Read the blog
-          <Icon name="arrowRight" size={14} />
-        </a>
-      </div>
-
-      <div className="learn-rail-list">
-        {latest.map((post, index) => (
-          <m.a
-            key={post.slug}
-            className="writing-item"
-            href={`#/blog/${post.slug}`}
-            initial={{ opacity: 0, x: -12 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6, ease: EASE_OUT, delay: 0.1 + index * 0.08 }}
-          >
-            <span className="writing-item-date">{blog.formatPostDate(post.date)}</span>
-            <div className="writing-item-body">
-              <h3>{post.title}</h3>
-              <p>{post.summary}</p>
-            </div>
-            <Icon name="arrowRight" size={16} className="writing-item-arrow" />
-          </m.a>
+    <div id="writing" className="notes-column">
+      <h3 className="notes-head">Writing</h3>
+      <ul className="notes-list">
+        {latest.map((post) => (
+          <li key={post.slug}>
+            <a className="notes-row" href={`#/blog/${post.slug}`}>
+              <span className="notes-title">{post.title}</span>
+              <span className="notes-meta">{blog.formatPostDate(post.date)}</span>
+            </a>
+          </li>
         ))}
-      </div>
-    </m.section>
+      </ul>
+      <a className="text-link" href="#/blog">
+        All writing
+        <Icon name="arrowRight" size={14} />
+      </a>
+    </div>
   );
 }

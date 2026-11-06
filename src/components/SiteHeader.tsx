@@ -1,24 +1,35 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { m, useScroll, useSpring } from 'framer-motion';
 import { Icon } from './Icon';
 import { profile } from '../data/profile';
+
+const blogItem = { label: 'Blog', href: '#/blog' };
 
 const navItems = [
   { label: 'Experience', href: '#experience' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Blog', href: '#/blog' },
+  blogItem,
   { label: 'Shelf', href: '#/shelf' },
   { label: 'Library', href: '#/library' },
   { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },
-] as const;
+];
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 40, mass: 0.3 });
+  const [hasPosts, setHasPosts] = useState(false);
+
+  // The Blog link appears by itself once a post is published.
+  useEffect(() => {
+    let alive = true;
+    import('../blog/posts').then((mod) => alive && setHasPosts(mod.posts.length > 0));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const items = navItems.filter((item) => hasPosts || item !== blogItem);
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false);
@@ -75,14 +86,13 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="site-header">
+      <header className="site-bar">
         <a className="wordmark" href="#top" aria-label="Rohan Bahl, back to top">
-          <span className="wordmark-given">Rohan</span>
-          <span className="wordmark-family">Bahl</span>
+          Rohan Bahl
         </a>
 
         <nav className="site-nav" aria-label="Primary">
-          {navItems.map((item) => (
+          {items.map((item) => (
             <a key={item.href} className="nav-link" href={item.href}>
               {item.label}
             </a>
@@ -91,10 +101,7 @@ export function SiteHeader() {
 
         <a className="header-resume" href={profile.links.resume} target="_blank" rel="noreferrer">
           Résumé
-          <Icon name="arrowRight" size={14} />
         </a>
-
-        <m.span className="scroll-progress" aria-hidden="true" style={{ scaleX: progress }} />
 
         <button
           ref={toggleRef}
@@ -118,10 +125,9 @@ export function SiteHeader() {
           tabIndex={-1}
         >
           <ul className="mobile-nav-list">
-            {navItems.map((item, index) => (
+            {items.map((item) => (
               <li key={item.href}>
                 <a className="mobile-nav-link" href={item.href} onClick={closeMenu}>
-                  <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                   {item.label}
                 </a>
               </li>

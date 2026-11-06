@@ -141,7 +141,7 @@ export default defineConfig(({ command }) => ({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          if (id.includes('node_modules/react') || id.includes('node_modules/framer-motion')) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/scheduler')) {
             return 'vendor-react'
           }
         },
@@ -153,6 +153,6 @@ export default defineConfig(({ command }) => ({
     chunkSizeWarningLimit: 600,
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'framer-motion'],
+    include: ['react', 'react-dom'],
   },
 }))

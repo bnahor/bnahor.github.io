@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useReducedMotion } from 'framer-motion';
+import { prefersReducedMotion } from '../../lib/motion';
 
 /**
  * Three capture channels on a scrolling scope. Each one fires a sync pulse
@@ -19,7 +19,7 @@ const CHANNELS = [
 
 const PERIOD = 1.1; // s between sync pulses
 const CYCLE = 9; // s, drift → lock → hold
-const SPEED = 84; // px per second of signal
+const SPEED = 70; // px per second of signal
 const MAX_SKEW = 0.2; // s, peak clock offset while drifting
 
 const smooth = (a: number, b: number, x: number) => {
@@ -64,9 +64,8 @@ export function SignalScope() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const readoutRef = useRef<HTMLSpanElement>(null);
   const stateRef = useRef<HTMLSpanElement>(null);
-  const reduceMotion = useReducedMotion();
-
   useEffect(() => {
+    const reduceMotion = prefersReducedMotion();
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) return;
@@ -102,7 +101,7 @@ export function SignalScope() {
       for (let k = firstK; k <= lastK; k++) {
         const x = head - (tau - k * PERIOD) * SPEED;
         const locked = 1 - driftAmount(k * PERIOD);
-        ctx.strokeStyle = `rgba(248, 248, 255, ${0.05 + 0.22 * locked ** 3})`;
+        ctx.strokeStyle = `rgba(17, 17, 14, ${0.1 + 0.3 * locked ** 3})`;
         ctx.setLineDash(locked > 0.9 ? [] : [2, 4]);
         ctx.beginPath();
         ctx.moveTo(x + 0.5, 0);
@@ -114,7 +113,7 @@ export function SignalScope() {
       for (let c = 0; c < CHANNELS.length; c++) {
         const mid = rowH * c + rowH * 0.58;
 
-        ctx.strokeStyle = 'rgba(248, 248, 255, 0.07)';
+        ctx.strokeStyle = 'rgba(17, 17, 14, 0.14)';
         ctx.beginPath();
         ctx.moveTo(0, mid + 0.5);
         ctx.lineTo(width, mid + 0.5);
@@ -122,9 +121,9 @@ export function SignalScope() {
 
         // Fade the trace in from the left so it reads as history.
         const grad = ctx.createLinearGradient(0, 0, head, 0);
-        grad.addColorStop(0, 'rgba(248, 248, 255, 0)');
-        grad.addColorStop(0.25, 'rgba(248, 248, 255, 0.5)');
-        grad.addColorStop(1, 'rgba(248, 248, 255, 0.95)');
+        grad.addColorStop(0, 'rgba(17, 17, 14, 0)');
+        grad.addColorStop(0.25, 'rgba(17, 17, 14, 0.5)');
+        grad.addColorStop(1, 'rgba(17, 17, 14, 0.95)');
         ctx.strokeStyle = grad;
         ctx.lineWidth = 1.25;
         ctx.beginPath();
@@ -137,11 +136,8 @@ export function SignalScope() {
         ctx.lineWidth = 1;
 
         const headY = mid - sample(c, tau) * amp;
-        ctx.fillStyle = '#f8f8ff';
-        ctx.shadowColor = 'rgba(248, 248, 255, 0.9)';
-        ctx.shadowBlur = 10;
+        ctx.fillStyle = '#ff1f6b';
         ctx.fillRect(head - 2.5, headY - 2.5, 5, 5);
-        ctx.shadowBlur = 0;
       }
     };
 
@@ -209,7 +205,7 @@ export function SignalScope() {
       io.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
     };
-  }, [reduceMotion]);
+  }, []);
 
   return (
     <figure className="scope" role="img" aria-label="Animated signal trace: three capture channels drifting apart, then locking to one clock">

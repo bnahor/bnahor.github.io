@@ -1,15 +1,15 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { LazyMotion, MotionConfig, domAnimation, m } from 'framer-motion';
 import { ContactTile } from './components/ContactTile';
-import { OutcomeRail } from './components/OutcomeRail';
 import { SiteHeader } from './components/SiteHeader';
+import { Stage } from './components/stage/Stage';
 import { EducationTile } from './components/tiles/EducationTile';
 import { ExperienceTile } from './components/tiles/ExperienceTile';
 import { HeroTile } from './components/tiles/HeroTile';
 import { LearnTile } from './components/tiles/LearnTile';
 import { ProjectsTile } from './components/tiles/ProjectsTile';
+import { ScenesTile } from './components/tiles/ScenesTile';
+import { SkillsTile } from './components/tiles/SkillsTile';
 import { WritingTile } from './components/tiles/WritingTile';
-import { Reveal } from './components/motion/Reveal';
 import { profile } from './data/profile';
 
 // Each routed page is its own chunk — none downloads until visited, and the
@@ -64,68 +64,72 @@ export default function App() {
   }, [onPage]);
 
   return (
-    <LazyMotion features={domAnimation} strict>
-      <MotionConfig reducedMotion="user">
-        {/* Keyed on the route so moving between pages fades rather than cuts.
-            Opacity only: a transform here would break the sticky header. */}
-        <m.div
-          key={route}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.45, ease: 'easeOut' }}
-        >
-          {onPage ? (
-            <Suspense
-              fallback={
-                <div className="site-shell">
-                  <main className="site-main shelf-main">
-                    <p className="shelf-fallback">Opening the {PAGE_NAMES[route]}…</p>
-                  </main>
-                </div>
-              }
-            >
-              {route === 'library' ? (
-                <LibraryView />
-              ) : route === 'blog' ? (
-                <BlogView />
-              ) : (
-                <ShelfView />
-              )}
-            </Suspense>
-          ) : (
-            <div className="site-shell">
-              <a className="skip-link" href="#main-content">
-                Skip to content
-              </a>
-
-              <div className="time-grid" aria-hidden="true" />
-
-              <SiteHeader />
-
-              <main id="main-content" className="site-main">
-                <HeroTile />
-                <OutcomeRail />
-                <WritingTile />
-                <LearnTile />
-                <ExperienceTile />
-                <ProjectsTile />
-
-                <Reveal className="closing-grid">
-                  <EducationTile />
-                  <ContactTile />
-                </Reveal>
+    <div key={route} className="route">
+      {onPage ? (
+        <Suspense
+          fallback={
+            <div className="page">
+              <main className="page-main">
+                <p className="page-note">Opening the {PAGE_NAMES[route]}…</p>
               </main>
+            </div>
+          }
+        >
+          {route === 'library' ? <LibraryView /> : route === 'blog' ? <BlogView /> : <ShelfView />}
+        </Suspense>
+      ) : (
+        <div className="home">
+          <a className="skip-link" href="#main-content">
+            Skip to content
+          </a>
 
-              <footer className="site-footer">
+          <Stage />
+          <SiteHeader />
+
+          <main id="main-content" className="home-main">
+            <div id="stage-sections">
+              <HeroTile />
+              <ScenesTile />
+            </div>
+
+            <div id="end-reel" className="reel">
+              <ExperienceTile />
+              <ProjectsTile />
+              <SkillsTile />
+              <EducationTile />
+              <section className="reel-section" aria-labelledby="notes-heading">
+                <h2 id="notes-heading" className="reel-title">Notes</h2>
+                <div className="notes-grid">
+                  <WritingTile />
+                  <LearnTile />
+                </div>
+              </section>
+              <ContactTile />
+
+              <footer className="reel-footer">
                 <p>
-                  © {new Date().getFullYear()} {profile.name}
+                  © {new Date().getFullYear()} {profile.name}. Designed and built in Singapore.
                 </p>
-                <p>Designed and built in Singapore.</p>
+                <p>
+                  Motion from{' '}
+                  <a href="https://www.ianxmason.com/100style/" target="_blank" rel="noreferrer">
+                    The 100STYLE Dataset
+                  </a>{' '}
+                  by Ian Mason,{' '}
+                  <a
+                    href="https://creativecommons.org/licenses/by/4.0/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    CC BY 4.0
+                  </a>
+                  . Cut to single strides, rebuilt on neutral proportions and smoothed.
+                </p>
               </footer>
             </div>
-          )}
-        </m.div>
-      </MotionConfig>
-    </LazyMotion>
+          </main>
+        </div>
+      )}
+    </div>
   );
 }
