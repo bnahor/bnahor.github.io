@@ -12,10 +12,27 @@ const navItems = [
   { label: 'Contact', href: '#contact' },
 ];
 
+const sectionIds = navItems.flatMap((item) => (item.href.startsWith('#/') ? [] : [item.href.slice(1)]));
+
+/** The section under the reading line, or the last one once the page bottoms out. */
+function currentSection(): string | null {
+  const line = window.innerHeight * 0.4;
+  const atEnd =
+    window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+  let found: string | null = null;
+  for (const id of sectionIds) {
+    const rect = document.getElementById(id)?.getBoundingClientRect();
+    if (!rect) continue;
+    if ((rect.top <= line && rect.bottom > line) || atEnd) found = id;
+  }
+  return found;
+}
+
 /** The page's own title carries the name at the top of the homepage. */
 function useHeaderState() {
   const [onStage, setOnStage] = useState(false);
   const [nameInView, setNameInView] = useState(false);
+  const [current, setCurrent] = useState<string | null>(null);
 
   useEffect(() => {
     const title = document.getElementById('hero-heading');
@@ -24,16 +41,27 @@ function useHeaderState() {
       rootMargin: '-56px 0px 0px 0px',
     });
     io.observe(title);
-    const onScroll = () => setOnStage(window.scrollY < 24);
-    onScroll();
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      setOnStage(window.scrollY < 24);
+      setCurrent(currentSection());
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
     return () => {
       io.disconnect();
+      cancelAnimationFrame(frame);
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
     };
   }, []);
 
-  return { onStage, nameInView };
+  return { onStage, nameInView, current };
 }
 
 export function SiteHeader() {
@@ -41,7 +69,7 @@ export function SiteHeader() {
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
   const [hasPosts, setHasPosts] = useState(false);
-  const { onStage, nameInView } = useHeaderState();
+  const { onStage, nameInView, current } = useHeaderState();
 
   // The Writing link appears by itself once a post is published.
   useEffect(() => {
@@ -120,7 +148,11 @@ export function SiteHeader() {
 
         <nav className="site-nav" aria-label="Primary">
           {items.map((item) => (
-            <a key={item.href} className="nav-link" href={item.href}>
+            <a
+              key={item.href}
+              className={`nav-link${current && item.href === `#${current}` ? ' is-current' : ''}`}
+              href={item.href}
+            >
               {item.label}
             </a>
           ))}
@@ -138,7 +170,9 @@ export function SiteHeader() {
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           onClick={() => (menuOpen ? closeMenu() : setMenuOpen(true))}
         >
-          <Icon name={menuOpen ? 'close' : 'menu'} size={22} />
+          <span key={String(menuOpen)} className="menu-icon">
+            <Icon name={menuOpen ? 'close' : 'menu'} size={22} />
+          </span>
         </button>
       </header>
 

@@ -71,8 +71,10 @@ function LibraryRow({ item }: { item: LibraryItem }) {
           // Only useful on the machine that holds the vault.
           LOCAL_LIBRARY && (
             <button type="button" className="lib-action" onClick={copy} title={command}>
-              {copied ? 'Copied' : 'Start notes'}
-              <Icon name={copied ? 'check' : 'clipboard'} size={12} />
+              <span key={String(copied)} className="swap">
+                {copied ? 'Copied' : 'Start notes'}
+                <Icon name={copied ? 'check' : 'clipboard'} size={12} />
+              </span>
             </button>
           )
         )}

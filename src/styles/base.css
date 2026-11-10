@@ -24,6 +24,13 @@
   --gutter: max(16px, env(safe-area-inset-left, 0px));
   --gutter-r: max(16px, env(safe-area-inset-right, 0px));
   --bar: 56px;
+
+  /* Motion: one curve for things settling, three speeds. */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-swing: cubic-bezier(0.65, 0, 0.35, 1);
+  --quick: 180ms;
+  --settle: 420ms;
+  --slow: 900ms;
 }
 
 @media (min-width: 720px) {
@@ -68,9 +75,12 @@ canvas {
 }
 
 html {
+  /* The page bounces at its edges itself (useElastic); the browser's own
+     overscroll showed the bare document past the stage and the sheet. */
+  overscroll-behavior-y: none;
   scroll-behavior: smooth;
   scroll-padding-top: 3.5rem;
-  background: var(--ink);
+  background: var(--sheet);
 }
 
 body {
@@ -140,13 +150,98 @@ summary {
 }
 
 .route {
-  animation: route-in 420ms ease-out both;
+  animation: route-in var(--settle) ease-out both;
 }
 
 @keyframes route-in {
   from {
     opacity: 0;
   }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+}
+
+/* Titles come up out of a slot, like a title card. The clip is padded so
+   descenders and accents are never cut once it's in. */
+@keyframes title-in {
+  from {
+    clip-path: inset(100% -0.25em -0.35em);
+    translate: 0 0.55em;
+  }
+
+  to {
+    clip-path: inset(-0.25em -0.25em -0.35em);
+    translate: 0 0;
+  }
+}
+
+@keyframes bar-in {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* A label that changes ("Copy email" → "Copied") lands rather than blinks. */
+.swap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  text-decoration: inherit;
+  animation: swap-in 320ms var(--ease) both;
+}
+
+@keyframes swap-in {
+  from {
+    opacity: 0;
+    translate: 0 0.45em;
+  }
+}
+
+/* Plus that turns into a minus: both strokes spin half a turn, and the
+   upright one lies down. */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
+
+.toggle::before,
+.toggle::after {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  margin-top: -0.75px;
+  background: currentColor;
+  content: '';
+  transition: rotate var(--settle) var(--ease);
+}
+
+.toggle::after {
+  rotate: 90deg;
+}
+
+/* A number that counts up holds its final width with an invisible copy. */
+.count {
+  display: inline-grid;
+  font-variant-numeric: tabular-nums;
+}
+
+.count > * {
+  grid-area: 1 / 1;
+  text-align: right;
+}
+
+.count > [aria-hidden] {
+  visibility: hidden;
 }
 
 /* A row of words that act as a link. 44px tall, so it's a real tap target. */
@@ -161,8 +256,15 @@ summary {
   text-underline-offset: 0.28em;
 }
 
+.text-link {
+  transition:
+    text-decoration-color var(--quick) ease,
+    text-decoration-thickness var(--quick) ease,
+    translate var(--quick) var(--ease);
+}
+
 .text-link svg {
-  transition: transform 180ms ease;
+  transition: translate var(--settle) var(--ease);
 }
 
 .text-link--strong {
@@ -176,8 +278,13 @@ summary {
   }
 
   .text-link:hover svg {
-    transform: translateX(3px);
+    translate: 4px 0;
   }
+}
+
+/* Everything pressable gives a pixel under the finger. */
+:is(.text-link, .chip, .take-button, .menu-toggle, .lib-action, .nav-link, .page-tabs a):active {
+  translate: 0 1px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -190,5 +297,14 @@ summary {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+@media print {
+  .reveal * {
+    clip-path: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    translate: none !important;
   }
 }

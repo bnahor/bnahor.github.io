@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { SiteHeader } from '../components/SiteHeader';
+import { Collapse } from '../components/Collapse';
 import { Icon } from '../components/Icon';
 import { ReadingHead } from './ReadingHead';
 import { fetchEntry, fetchManifest } from './api';
@@ -133,13 +134,11 @@ function ShelfRow({ entry }: { entry: ManifestEntry }) {
         <span className="shelf-kind">{entry.kind}</span>
         <span className={`shelf-status shelf-status--${entry.status}`}>{entry.status}</span>
         <span className="shelf-pct">{String(entry.progress).padStart(2, '0')}%</span>
-        <span className="shelf-chevron" aria-hidden="true">
-          <Icon name={open ? 'close' : 'arrowDown'} size={13} />
-        </span>
+        <span className="shelf-chevron toggle" aria-hidden="true" />
       </button>
 
-      {open && (
-        <div className="shelf-row-body">
+      <Collapse open={open} className="shelf-row-body">
+        <div className="shelf-row-inner">
           {full ? (
             <EntryBody entry={full} />
           ) : failed ? (
@@ -148,7 +147,7 @@ function ShelfRow({ entry }: { entry: ManifestEntry }) {
             <p className="shelf-empty-note">Loading notes…</p>
           )}
         </div>
-      )}
+      </Collapse>
     </article>
   );
 }

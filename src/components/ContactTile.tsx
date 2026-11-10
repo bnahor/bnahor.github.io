@@ -27,8 +27,10 @@ export function ContactTile() {
       </a>
       <div className="fin-links">
         <button className="text-link" type="button" onClick={copyEmail} aria-live="polite">
-          {copied ? 'Copied' : 'Copy email'}
-          {copied && <Icon name="check" size={14} />}
+          <span key={String(copied)} className="swap">
+            {copied ? 'Copied' : 'Copy email'}
+            {copied && <Icon name="check" size={14} />}
+          </span>
         </button>
         <a className="text-link" href={profile.links.github} target="_blank" rel="noreferrer">
           GitHub

@@ -5,6 +5,19 @@
   padding: 0 var(--gutter-r) env(safe-area-inset-bottom, 0px) var(--gutter);
   background: var(--sheet);
   color: var(--ink);
+  /* The sheet slides up over the stage, so it casts onto it. */
+  box-shadow: 0 -36px 72px -28px rgba(17, 17, 14, 0.42);
+}
+
+/* More sheet below the end, for when the page bounces past it. */
+.reel::after {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  height: 40vh;
+  background: var(--sheet);
+  content: '';
 }
 
 /* One layout for every section: heading in the margin, content beside it. */
@@ -32,6 +45,12 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
     align-items: start;
   }
+
+  /* The heading waits in the margin while its section scrolls past. */
+  .reel-title {
+    position: sticky;
+    top: calc(var(--bar) + 1.25rem);
+  }
 }
 
 .roll {
@@ -40,8 +59,47 @@
 }
 
 .roll > li {
+  position: relative;
   padding: 1.1rem 0;
-  border-top: 1px solid var(--ink-line);
+}
+
+/* The rule above each row, drawn rather than bordered so it can be laid down. */
+.roll > li::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--ink-line);
+  content: '';
+  transform-origin: left;
+}
+
+/* Spike tape over the rule of a row you can open: laid in from the left on
+   hover or while open, pulled off to the right after. */
+.roll > li:has(> details)::after {
+  position: absolute;
+  top: -0.5px;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: var(--spike);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 520ms var(--ease);
+}
+
+.roll > li:has(> .credit[open]:not(.is-closing))::after {
+  transform: none;
+  transform-origin: left;
+}
+
+@media (hover: hover) {
+  .roll > li:has(summary:hover)::after {
+    transform: none;
+    transform-origin: left;
+  }
 }
 
 .roll > li:last-child {
@@ -86,16 +144,25 @@
   display: none;
 }
 
-.credit summary::after {
+.credit summary .toggle {
   position: absolute;
-  top: 0.2em;
-  right: 0;
-  content: '+';
-  font: 300 1.25rem/1 var(--body);
+  top: 6px;
+  right: 2px;
 }
 
-.credit[open] summary::after {
-  content: '–';
+:is(.credit[open]:not(.is-closing), .shelf-row.is-open) .toggle::before,
+:is(.credit[open]:not(.is-closing), .shelf-row.is-open) .toggle::after {
+  rotate: 180deg;
+}
+
+.credit summary .credit-name {
+  transition: translate var(--settle) var(--ease);
+}
+
+@media (hover: hover) {
+  .credit summary:hover .credit-name {
+    translate: 6px 0;
+  }
 }
 
 .credit-job {
@@ -134,13 +201,17 @@
   gap: 1.25rem;
 }
 
-.credit-body {
+/* The outer box is the one that grows; it has no padding, so it can reach 0. */
+.credit-body[data-motion='opening'],
+.credit-body[data-motion='closing'] {
+  overflow: hidden;
+}
+
+.credit-body-inner {
   display: grid;
   max-width: 44rem;
   gap: 0.9rem;
-  margin-top: 1rem;
-  padding-bottom: 0.5rem;
-  animation: route-in 240ms ease-out both;
+  padding: 1rem 0 0.5rem;
 }
 
 .credit-story {
@@ -224,6 +295,18 @@
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.16em;
+  transition:
+    text-decoration-color var(--settle) var(--ease),
+    text-decoration-thickness var(--settle) var(--ease),
+    text-underline-offset var(--settle) var(--ease);
+}
+
+@media (hover: hover) {
+  .fin-address:hover {
+    text-decoration-color: var(--spike);
+    text-decoration-thickness: 4px;
+    text-underline-offset: 0.22em;
+  }
 }
 
 .fin-links {
@@ -258,3 +341,57 @@
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
+
+/* Scroll reveals, armed by useReveal. Titles rise out of a slot, rules are
+   laid down left to right, and rows settle in behind them, one after another. */
+.reveal .reel-title,
+.reveal.scene-copy h2 {
+  clip-path: inset(-0.25em -0.25em -0.35em);
+  transition:
+    clip-path var(--slow) var(--ease),
+    translate var(--slow) var(--ease);
+}
+
+.reveal:not(.is-in) .reel-title,
+.reveal.scene-copy:not(.is-in) h2 {
+  clip-path: inset(100% -0.25em -0.35em);
+  translate: 0 0.55em;
+}
+
+.reveal .roll > li::before {
+  transition: transform 1.1s var(--ease) calc(min(var(--i, 0), 8) * 70ms);
+}
+
+.reveal:not(.is-in) .roll > li::before {
+  transform: scaleX(0);
+}
+
+/* The open card's tape waits for its rule, then is laid over it. */
+.reveal:not(.is-in) .roll > li::after {
+  transform: scaleX(0);
+}
+
+.reveal.is-in .roll > li:has(> .credit[open]:not(.is-closing))::after {
+  animation: bar-in 1s var(--ease) 380ms both;
+}
+
+.reveal .roll > li > *,
+.reveal:is(.fin, .scene-copy) > :not(.reel-title, h2),
+.reveal.reel-footer > * {
+  transition:
+    opacity 700ms ease-out,
+    translate var(--slow) var(--ease);
+  transition-delay: calc(140ms + min(var(--i, 0), 8) * 70ms);
+}
+
+.reveal:not(.is-in) .roll > li > *,
+.reveal:is(.fin, .scene-copy):not(.is-in) > :not(.reel-title, h2),
+.reveal.reel-footer:not(.is-in) > * {
+  opacity: 0;
+  translate: 0 0.9rem;
+}
+
+.reveal:is(.fin, .scene-copy, .reel-footer) > :nth-child(2) { --i: 1; }
+.reveal:is(.fin, .scene-copy, .reel-footer) > :nth-child(3) { --i: 2; }
+.reveal:is(.fin, .scene-copy, .reel-footer) > :nth-child(4) { --i: 3; }
+.reveal:is(.fin, .scene-copy, .reel-footer) > :nth-child(5) { --i: 4; }

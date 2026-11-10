@@ -49,11 +49,61 @@
   color: var(--ink-soft);
 }
 
+.page-tabs a {
+  transition: color var(--quick) ease;
+}
+
+.page-tabs a::after {
+  bottom: 0;
+}
+
 .page-tabs a[aria-current='page'] {
   color: var(--ink);
   font-weight: 600;
-  box-shadow: inset 0 -3px 0 var(--ink);
 }
+
+.page-tabs a[aria-current='page']::after {
+  animation: bar-in 700ms var(--ease) 200ms both;
+}
+
+@media (hover: hover) {
+  .page-tabs a:hover {
+    color: var(--ink);
+  }
+}
+
+/* A page arrives: the title comes up out of its slot, the rest settles in. */
+.page-title,
+.post-title {
+  animation: title-in var(--slow) var(--ease) both;
+}
+
+.page-head > :not(.page-title),
+.post-header > :not(.post-title),
+.shelf-controls {
+  animation: rise-in 700ms var(--ease) both;
+}
+
+.page-head > :nth-child(2) { animation-delay: 90ms; }
+.page-head > :nth-child(3) { animation-delay: 160ms; }
+.page-head > :nth-child(4) { animation-delay: 220ms; }
+.shelf-controls { animation-delay: 260ms; }
+
+/* Rows settle in one after another; past the first dozen they just arrive. */
+:is(.shelf-row, .lib-group, .post-list li) {
+  animation: rise-in 600ms var(--ease) both;
+  animation-delay: 300ms;
+}
+
+:is(.shelf-row, .lib-group, .post-list li):nth-child(1) { animation-delay: 280ms; }
+:is(.shelf-row, .lib-group, .post-list li):nth-child(2) { animation-delay: 310ms; }
+:is(.shelf-row, .lib-group, .post-list li):nth-child(3) { animation-delay: 340ms; }
+:is(.shelf-row, .lib-group, .post-list li):nth-child(4) { animation-delay: 370ms; }
+:is(.shelf-row, .lib-group, .post-list li):nth-child(5) { animation-delay: 400ms; }
+:is(.shelf-row, .lib-group, .post-list li):nth-child(6) { animation-delay: 430ms; }
+:is(.shelf-row, .lib-group, .post-list li):nth-child(7) { animation-delay: 460ms; }
+:is(.shelf-row, .lib-group, .post-list li):nth-child(8) { animation-delay: 490ms; }
+:is(.shelf-row, .lib-group, .post-list li):nth-child(n + 9) { animation-delay: 520ms; }
 
 .page-lede {
   max-width: 38rem;
@@ -89,6 +139,9 @@
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
+  transition:
+    text-decoration-color var(--quick) ease,
+    text-decoration-thickness var(--quick) ease;
 }
 
 @media (hover: hover) {
@@ -130,14 +183,16 @@
   min-height: 44px;
   color: var(--ink-soft);
   font-size: 0.9375rem;
-  box-shadow: inset 0 0 0 transparent;
-  transition: box-shadow 160ms ease, color 160ms ease;
+  transition: color var(--quick) ease;
+}
+
+.chip::after {
+  bottom: 0;
 }
 
 .chip.is-on {
   color: var(--ink);
   font-weight: 600;
-  box-shadow: inset 0 -3px 0 var(--ink);
 }
 
 @media (hover: hover) {
@@ -404,7 +459,34 @@
 
 /* The shelf */
 .shelf-row {
+  position: relative;
   border-bottom: 1px solid var(--ink-line);
+}
+
+/* The same spike tape as the experience cards, over this row's rule. */
+.shelf-row::after {
+  position: absolute;
+  right: 0;
+  bottom: -1.5px;
+  left: 0;
+  height: 2px;
+  background: var(--spike);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 520ms var(--ease);
+}
+
+.shelf-row.is-open::after {
+  transform: none;
+  transform-origin: left;
+}
+
+@media (hover: hover) {
+  .shelf-row:has(.shelf-row-head:hover)::after {
+    transform: none;
+    transform-origin: left;
+  }
 }
 
 .shelf-row-head {
@@ -427,7 +509,7 @@
   font: 400 1.25rem/1.2 var(--display);
   font-variation-settings: 'wdth' 94, 'wght' 400;
   text-wrap: pretty;
-  transition: color 160ms ease;
+  transition: translate var(--settle) var(--ease);
 }
 
 .shelf-kind,
@@ -496,13 +578,22 @@
 
 @media (hover: hover) {
   .shelf-row-head:hover .shelf-title {
-    color: var(--spike);
+    translate: 6px 0;
   }
 }
 
-.shelf-row-body {
+.shelf-row-body[data-motion='opening'],
+.shelf-row-body[data-motion='closing'] {
+  overflow: hidden;
+}
+
+.shelf-row-inner {
   padding-bottom: 1.75rem;
-  animation: route-in 220ms ease-out both;
+}
+
+/* Notes that arrive after the row has opened fade in where they land. */
+.shelf-entry {
+  animation: rise-in 520ms var(--ease) both;
 }
 
 .shelf-empty-note {
@@ -661,6 +752,9 @@
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.25em;
+  transition:
+    text-decoration-color var(--quick) ease,
+    text-decoration-thickness var(--quick) ease;
 }
 
 .lib-action--on {

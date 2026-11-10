@@ -10,6 +10,7 @@ import { ScenesTile } from './components/tiles/ScenesTile';
 import { SkillsTile } from './components/tiles/SkillsTile';
 import { WritingTile } from './components/tiles/WritingTile';
 import { profile } from './data/profile';
+import { useElastic, useReveal } from './lib/motion';
 
 // Each routed page is its own chunk — none downloads until visited, and the
 // library catalogue in particular is a large payload.
@@ -51,6 +52,9 @@ export default function App() {
   const route = useRoute();
   const onPage = route !== 'home';
   const wasOnPage = useRef(true);
+
+  useReveal('.reel-section, .fin, .reel-footer, .scene-copy', route);
+  useElastic('.home-main, .page-main, .page-footer');
 
   // Arriving at a section anchor, from a page or a direct link: the homepage
   // mounts fresh, so the browser's default hash scroll has nothing to land on.

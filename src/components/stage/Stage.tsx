@@ -127,7 +127,9 @@ export function Stage() {
       <canvas ref={canvasRef} className="stage-canvas" aria-hidden="true" />
       <button ref={takeRef} type="button" className="take-button" onClick={nextTake}>
         <span className="visually-hidden">Change the figure’s walk. Current walk: </span>
-        {TAKE_LABELS[take]} walk
+        <span key={take} className="swap">
+          {TAKE_LABELS[take]} walk
+        </span>
         <span className="take-next" aria-hidden="true">
           Next
         </span>

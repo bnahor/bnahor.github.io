@@ -14,7 +14,19 @@
   color: var(--ink);
   font-size: 0.9375rem;
   white-space: nowrap;
-  transition: background-color 200ms ease, border-color 200ms ease;
+  transition:
+    background-color var(--settle) ease,
+    border-color var(--settle) ease,
+    backdrop-filter var(--settle) ease;
+}
+
+/* Frosted over the sheet, so what scrolls under it stays legible but present. */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .site-bar {
+    background: rgba(228, 227, 219, 0.88);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    backdrop-filter: blur(18px) saturate(1.4);
+  }
 }
 
 .home .site-bar {
@@ -26,6 +38,8 @@
 .site-bar.is-clear {
   border-color: transparent;
   background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .wordmark {
@@ -33,18 +47,56 @@
   align-items: center;
   min-height: 44px;
   font-weight: 600;
-  transition: opacity 200ms ease;
+  transition:
+    opacity var(--settle) var(--ease),
+    translate var(--settle) var(--ease),
+    visibility var(--settle);
 }
 
 .wordmark.is-hidden {
   visibility: hidden;
   opacity: 0;
+  translate: 0 0.4em;
 }
 
 .site-nav {
   display: none;
   gap: 1.5rem;
   margin-left: auto;
+}
+
+/* One underline for every set of choices (header, reading tabs, filters):
+   a bar laid in from the left, ink for where you are, spike on hover. */
+:is(.nav-link, .page-tabs a, .chip) {
+  position: relative;
+}
+
+:is(.nav-link, .page-tabs a, .chip)::after {
+  position: absolute;
+  right: 0;
+  bottom: 9px;
+  left: 0;
+  height: 2px;
+  background: var(--ink);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: right;
+  transition:
+    transform var(--settle) var(--ease),
+    background-color var(--quick) ease;
+}
+
+:is(.nav-link.is-current, .page-tabs a[aria-current='page'], .chip.is-on)::after {
+  transform: none;
+  transform-origin: left;
+}
+
+@media (hover: hover) {
+  :is(.nav-link, .page-tabs a, .chip):hover::after {
+    background: var(--spike);
+    transform: none;
+    transform-origin: left;
+  }
 }
 
 .nav-link {
@@ -76,11 +128,17 @@
   }
 }
 
-@media (hover: hover) {
-  .nav-link:hover {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.3em;
+/* The menu icon turns as it changes between bars and a cross. */
+.menu-icon {
+  display: block;
+  animation: turn-in var(--settle) var(--ease) both;
+}
+
+@keyframes turn-in {
+  from {
+    opacity: 0;
+    rotate: -90deg;
+    scale: 0.6;
   }
 }
 
@@ -107,3 +165,15 @@
   border-bottom: 1px solid var(--ink-line);
   font: 300 clamp(1.5rem, 7vw, 2.25rem)/1.1 var(--display);
 }
+
+.mobile-nav-list li {
+  animation: rise-in 520ms var(--ease) both;
+}
+
+.mobile-nav-list li:nth-child(1) { animation-delay: 40ms; }
+.mobile-nav-list li:nth-child(2) { animation-delay: 80ms; }
+.mobile-nav-list li:nth-child(3) { animation-delay: 120ms; }
+.mobile-nav-list li:nth-child(4) { animation-delay: 160ms; }
+.mobile-nav-list li:nth-child(5) { animation-delay: 200ms; }
+.mobile-nav-list li:nth-child(6) { animation-delay: 240ms; }
+.mobile-nav-list li:nth-child(7) { animation-delay: 280ms; }
